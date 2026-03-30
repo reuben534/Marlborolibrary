@@ -1,0 +1,236 @@
+Create a complete modern UI design for a Library Management System called "Marlboro Learning Library – Digital Management System".
+
+The system must include both Desktop Admin Dashboard and Mobile App interfaces.
+
+Design style should be modern, clean, minimal, and professional with a green theme inspired by educational platforms.
+
+Primary Color:
+Dark Green #1B5E4B
+
+Secondary Colors:
+Light Green
+White
+Light Gray
+
+Typography:
+Modern sans-serif font similar to Inter or Roboto.
+
+Use components like cards, tables, dropdowns, date pickers, icons, and form inputs.
+
+--------------------------------------------------
+
+DESKTOP VERSION
+
+Create a responsive admin dashboard layout with:
+
+Left Sidebar Navigation
+Top Navigation Bar
+Main Content Area
+
+Sidebar menu items:
+- Dashboard
+- Members
+- Books
+- Borrow
+- Return
+- Users
+- Settings
+
+--------------------------------------------------
+
+SCREENS TO GENERATE
+
+1. Login Page
+Include:
+Logo
+Username field
+Password field
+Role selector
+Login button
+Forgot Password link
+Register link
+
+--------------------------------------------------
+
+2. Register Page
+Include form fields:
+Full Name
+Username
+Password
+Confirm Password
+Role
+Upload Photo
+Register button
+
+--------------------------------------------------
+
+3. Dashboard Page
+
+Display statistics cards:
+
+Total Members
+Total Books
+Borrowed Today
+Overdue Books
+
+Add sections:
+
+Recent Activity Table
+Quick Action Buttons:
+Add Member
+Borrow Book
+Return Book
+
+--------------------------------------------------
+
+4. Profile Page
+
+Display user profile card with:
+
+Profile photo
+Name
+Email
+Phone
+
+Buttons:
+Change Photo
+Save Changes
+
+--------------------------------------------------
+
+5. Manage Members Page
+
+Create a table with columns:
+
+Member Name
+Phone
+Email
+Status
+Actions
+
+Buttons:
+Add Member
+Edit
+Delete
+View
+
+--------------------------------------------------
+
+6. Add / Edit Member Page
+
+Form fields:
+
+Full Name
+ID Number
+Phone Number
+Address
+Emergency Contact
+Upload Photo
+
+Buttons:
+
+Save Member
+Cancel
+
+--------------------------------------------------
+
+7. Manage Books Page
+
+Table with:
+
+Book Title
+Author
+ISBN
+Copies
+Status
+Actions
+
+Buttons:
+
+Add Book
+Edit
+Delete
+
+--------------------------------------------------
+
+8. Borrow Book Page
+
+Form fields:
+
+Select Member
+Select Book
+Borrow Date
+Due Date
+
+Buttons:
+
+Confirm Borrow
+Cancel
+
+--------------------------------------------------
+
+9. Return Book Page
+
+Form fields:
+
+Member
+Book
+Borrow Date
+Return Date
+
+Include automatic fine calculation section:
+
+Late Fee field
+Calculate Fine button
+
+Buttons:
+
+Confirm Return
+Cancel
+
+Transaction ID display at bottom.
+
+--------------------------------------------------
+
+MOBILE VERSION
+
+Create a mobile version of the system with simplified UI screens.
+
+Screens:
+
+Login
+Register
+Dashboard
+Profile
+Manage Books
+Borrow Book
+Return Book
+
+Use a mobile top bar with back navigation and scrollable content.
+
+Buttons should be large and touch-friendly.
+
+--------------------------------------------------
+
+DESIGN REQUIREMENTS
+
+Use modern UI components:
+
+Cards
+Tables
+Dropdown selectors
+Date pickers
+Buttons
+Icons
+Input fields
+Sidebar navigation
+
+Include subtle shadows and rounded corners.
+
+Spacing should follow a clean grid system.
+
+Make the design visually similar to modern admin dashboards like educational management systems.
+
+--------------------------------------------------
+
+Deliver the full UI kit and all screens organized in Figma frames.
