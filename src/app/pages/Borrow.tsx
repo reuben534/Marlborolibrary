@@ -1,13 +1,22 @@
+<<<<<<< HEAD
 import { useState } from 'react';
 import { Calendar, BookUp } from 'lucide-react';
 import { ConfirmModal } from '../components/ConfirmModal';
 import { toast } from 'sonner';
+=======
+import { useState, useEffect } from 'react';
+import { Calendar, BookUp } from 'lucide-react';
+import { ConfirmModal } from '../components/ConfirmModal';
+import { toast } from 'sonner';
+import { apiClient } from '../api/client';
+>>>>>>> ac623c4 (created database)
 
 export function Borrow() {
   const [formData, setFormData] = useState({
     member: '',
     book: '',
     borrowDate: new Date().toISOString().split('T')[0],
+<<<<<<< HEAD
     dueDate: '',
   });
   const [confirmModal, setConfirmModal] = useState(false);
@@ -25,12 +34,41 @@ export function Borrow() {
     { id: '3', title: 'Refactoring', available: 4 },
     { id: '4', title: 'Introduction to Algorithms', available: 2 },
   ];
+=======
+    dueDate: new Date(Date.now() + 14 * 24 * 60 * 60 * 1000).toISOString().split('T')[0],
+  });
+  const [confirmModal, setConfirmModal] = useState(false);
+  const [members, setMembers] = useState<{ _id: string; name: string }[]>([]);
+  const [books, setBooks] = useState<{ _id: string; title: string; available: number }[]>([]);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const [membersData, booksData] = await Promise.all([
+          apiClient('/members'),
+          apiClient('/books'),
+        ]);
+        setMembers(membersData);
+        setBooks(booksData.filter((b: any) => b.available > 0));
+      } catch (error) {
+        console.error('Error fetching borrow data:', error);
+        toast.error('Failed to load data');
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchData();
+  }, []);
+>>>>>>> ac623c4 (created database)
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     setConfirmModal(true);
   };
 
+<<<<<<< HEAD
   const handleConfirm = () => {
     const member = members.find((m) => m.id === formData.member);
     const book = books.find((b) => b.id === formData.book);
@@ -45,6 +83,44 @@ export function Borrow() {
     });
   };
 
+=======
+  const handleConfirm = async () => {
+    try {
+      await apiClient('/transactions/borrow', {
+        method: 'POST',
+        body: JSON.stringify({
+          memberId: formData.member,
+          bookId: formData.book,
+          notes: '',
+        }),
+      });
+
+      const member = members.find((m) => m._id === formData.member);
+      const book = books.find((b) => b._id === formData.book);
+      toast.success(
+        `Borrow confirmed! "${book?.title}" to ${member?.name}`
+      );
+      
+      setFormData({
+        member: '',
+        book: '',
+        borrowDate: new Date().toISOString().split('T')[0],
+        dueDate: new Date(Date.now() + 14 * 24 * 60 * 60 * 1000).toISOString().split('T')[0],
+      });
+      
+      // Refresh books
+      const booksData = await apiClient('/books');
+      setBooks(booksData.filter((b: any) => b.available > 0));
+    } catch (error: any) {
+      toast.error(error.message || 'Failed to process loan');
+    }
+  };
+
+  if (loading) {
+    return <div className="flex items-center justify-center h-64">Loading...</div>;
+  }
+
+>>>>>>> ac623c4 (created database)
   return (
     <div className="max-w-3xl mx-auto space-y-6">
       {/* Header */}
@@ -81,7 +157,11 @@ export function Borrow() {
               >
                 <option value="">Choose a member</option>
                 {members.map((member) => (
+<<<<<<< HEAD
                   <option key={member.id} value={member.id}>
+=======
+                  <option key={member._id} value={member._id}>
+>>>>>>> ac623c4 (created database)
                     {member.name}
                   </option>
                 ))}
@@ -100,7 +180,11 @@ export function Borrow() {
               >
                 <option value="">Choose a book</option>
                 {books.map((book) => (
+<<<<<<< HEAD
                   <option key={book.id} value={book.id}>
+=======
+                  <option key={book._id} value={book._id}>
+>>>>>>> ac623c4 (created database)
                     {book.title} ({book.available} available)
                   </option>
                 ))}
@@ -166,7 +250,11 @@ export function Borrow() {
                   member: '',
                   book: '',
                   borrowDate: new Date().toISOString().split('T')[0],
+<<<<<<< HEAD
                   dueDate: '',
+=======
+                  dueDate: new Date(Date.now() + 14 * 24 * 60 * 60 * 1000).toISOString().split('T')[0],
+>>>>>>> ac623c4 (created database)
                 })
               }
               className="flex-1 px-6 py-3 bg-gray-100 text-gray-700 rounded-lg font-medium hover:bg-gray-200 transition-colors"
@@ -177,6 +265,7 @@ export function Borrow() {
         </form>
       </div>
 
+<<<<<<< HEAD
       {/* Recent Borrows */}
       <div className="bg-white rounded-xl shadow-sm border border-gray-100 p-6">
         <h3 className="text-lg font-bold text-gray-900 mb-4">
@@ -202,6 +291,8 @@ export function Borrow() {
         </div>
       </div>
 
+=======
+>>>>>>> ac623c4 (created database)
       {/* Confirmation Modal */}
       <ConfirmModal
         open={confirmModal}
@@ -215,4 +306,8 @@ export function Borrow() {
       />
     </div>
   );
+<<<<<<< HEAD
 }
+=======
+}
+>>>>>>> ac623c4 (created database)

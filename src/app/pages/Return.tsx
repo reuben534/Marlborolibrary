@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 import { useState } from 'react';
 import { Calendar, BookDown, DollarSign, Calculator } from 'lucide-react';
 import { ConfirmModal } from '../components/ConfirmModal';
@@ -8,10 +9,26 @@ export function Return() {
     member: '',
     book: '',
     borrowDate: '',
+=======
+import { useState, useEffect } from 'react';
+import { Calendar, BookDown, DollarSign, Calculator } from 'lucide-react';
+import { ConfirmModal } from '../components/ConfirmModal';
+import { toast } from 'sonner';
+import { apiClient } from '../api/client';
+
+export function Return() {
+  const [formData, setFormData] = useState({
+    transactionId: '',
+    member: '',
+    book: '',
+    borrowDate: '',
+    dueDate: '',
+>>>>>>> ac623c4 (created database)
     returnDate: new Date().toISOString().split('T')[0],
   });
   const [lateFee, setLateFee] = useState(0);
   const [confirmModal, setConfirmModal] = useState(false);
+<<<<<<< HEAD
 
   const activeBorrows = [
     {
@@ -40,12 +57,45 @@ export function Return() {
     const returnD = new Date(formData.returnDate);
     const dueDate = new Date(borrow);
     dueDate.setDate(dueDate.getDate() + 14); // 14 days loan period
+=======
+  const [activeBorrows, setActiveBorrows] = useState<any[]>([]);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    const fetchActiveBorrows = async () => {
+      try {
+        const transactions = await apiClient('/transactions');
+        setActiveBorrows(transactions.filter((t: any) => t.status === 'active' || t.status === 'overdue'));
+      } catch (error) {
+        console.error('Error fetching active borrows:', error);
+        toast.error('Failed to load active loans');
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchActiveBorrows();
+  }, []);
+
+  const calculateFine = () => {
+    if (!formData.dueDate || !formData.returnDate) {
+      toast.error('Select a loan to calculate fine');
+      return;
+    }
+
+    const dueDate = new Date(formData.dueDate);
+    const returnD = new Date(formData.returnDate);
+>>>>>>> ac623c4 (created database)
 
     if (returnD > dueDate) {
       const daysLate = Math.ceil(
         (returnD.getTime() - dueDate.getTime()) / (1000 * 60 * 60 * 24)
       );
+<<<<<<< HEAD
       const fee = daysLate * 2; // £2 per day
+=======
+      const fee = daysLate * 1; // £1 per day as per backend
+>>>>>>> ac623c4 (created database)
       setLateFee(fee);
       toast.info(`${daysLate} days overdue. Fine: £${fee.toFixed(2)}`);
     } else {
@@ -56,6 +106,7 @@ export function Return() {
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
+<<<<<<< HEAD
     setConfirmModal(true);
   };
 
@@ -71,6 +122,45 @@ export function Return() {
     setLateFee(0);
   };
 
+=======
+    calculateFine();
+    setConfirmModal(true);
+  };
+
+  const handleConfirm = async () => {
+    try {
+      await apiClient(`/transactions/return/${formData.transactionId}`, {
+        method: 'POST',
+        body: JSON.stringify({
+          condition: 'Good',
+          notes: '',
+        }),
+      });
+
+      toast.success(`Return confirmed! "${formData.book}" returned successfully.`);
+      setFormData({
+        transactionId: '',
+        member: '',
+        book: '',
+        borrowDate: '',
+        dueDate: '',
+        returnDate: new Date().toISOString().split('T')[0],
+      });
+      setLateFee(0);
+      
+      // Refresh active borrows
+      const transactions = await apiClient('/transactions');
+      setActiveBorrows(transactions.filter((t: any) => t.status === 'active' || t.status === 'overdue'));
+    } catch (error: any) {
+      toast.error(error.message || 'Failed to process return');
+    }
+  };
+
+  if (loading) {
+    return <div className="flex items-center justify-center h-64">Loading...</div>;
+  }
+
+>>>>>>> ac623c4 (created database)
   return (
     <div className="max-w-3xl mx-auto space-y-6">
       {/* Header */}
@@ -100,6 +190,7 @@ export function Return() {
                 Select Loan *
               </label>
               <select
+<<<<<<< HEAD
                 value={formData.member}
                 onChange={(e) => {
                   const borrow = activeBorrows.find((b) => b.id === e.target.value);
@@ -110,6 +201,19 @@ export function Return() {
                       member: e.target.value,
                       book: borrow.book,
                       borrowDate: `${year}-${month}-${day}`,
+=======
+                value={formData.transactionId}
+                onChange={(e) => {
+                  const borrow = activeBorrows.find((b) => b._id === e.target.value);
+                  if (borrow) {
+                    setFormData({
+                      ...formData,
+                      transactionId: borrow._id,
+                      member: borrow.member.name,
+                      book: borrow.book.title,
+                      borrowDate: new Date(borrow.borrowDate).toISOString().split('T')[0],
+                      dueDate: new Date(borrow.dueDate).toISOString().split('T')[0],
+>>>>>>> ac623c4 (created database)
                     });
                   }
                 }}
@@ -118,8 +222,13 @@ export function Return() {
               >
                 <option value="">Choose an active loan</option>
                 {activeBorrows.map((borrow) => (
+<<<<<<< HEAD
                   <option key={borrow.id} value={borrow.id}>
                     {borrow.member} - {borrow.book} (Due: {borrow.dueDate})
+=======
+                  <option key={borrow._id} value={borrow._id}>
+                    {borrow.member.name} - {borrow.book.title} (Due: {new Date(borrow.dueDate).toLocaleDateString('en-GB')})
+>>>>>>> ac623c4 (created database)
                   </option>
                 ))}
               </select>
@@ -184,6 +293,7 @@ export function Return() {
               </div>
             </div>
             <p className="text-sm text-gray-600 mt-3">
+<<<<<<< HEAD
               Late fee: £2.00 per day overdue
             </p>
           </div>
@@ -193,6 +303,9 @@ export function Return() {
             <p className="text-sm text-gray-600 mb-1">Transaction ID</p>
             <p className="text-lg font-mono font-semibold text-gray-900">
               TXN-{Date.now().toString().slice(-8)}
+=======
+              Late fee: £1.00 per day overdue
+>>>>>>> ac623c4 (created database)
             </p>
           </div>
 
@@ -209,9 +322,17 @@ export function Return() {
               type="button"
               onClick={() => {
                 setFormData({
+<<<<<<< HEAD
                   member: '',
                   book: '',
                   borrowDate: '',
+=======
+                  transactionId: '',
+                  member: '',
+                  book: '',
+                  borrowDate: '',
+                  dueDate: '',
+>>>>>>> ac623c4 (created database)
                   returnDate: new Date().toISOString().split('T')[0],
                 });
                 setLateFee(0);
@@ -224,6 +345,7 @@ export function Return() {
         </form>
       </div>
 
+<<<<<<< HEAD
       {/* Recent Returns */}
       <div className="bg-white rounded-xl shadow-sm border border-gray-100 p-6">
         <h3 className="text-lg font-bold text-gray-900 mb-4">Recent Returns</h3>
@@ -263,6 +385,8 @@ export function Return() {
         </div>
       </div>
 
+=======
+>>>>>>> ac623c4 (created database)
       {/* Confirmation Modal */}
       <ConfirmModal
         open={confirmModal}
@@ -280,4 +404,8 @@ export function Return() {
       />
     </div>
   );
+<<<<<<< HEAD
 }
+=======
+}
+>>>>>>> ac623c4 (created database)

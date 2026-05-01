@@ -1,13 +1,24 @@
+<<<<<<< HEAD
 import { useState } from 'react';
+=======
+import { useState, useEffect } from 'react';
+>>>>>>> ac623c4 (created database)
 import { useAuth } from '../context/AuthContext';
 import { Plus, Search, Edit, Trash2, Eye, Phone, Mail } from 'lucide-react';
 import { ConfirmModal } from '../components/ConfirmModal';
 import { MemberModal } from '../components/MemberModal';
 import { ViewMemberModal } from '../components/ViewMemberModal';
 import { toast } from 'sonner';
+<<<<<<< HEAD
 
 interface Member {
   id: string;
+=======
+import { apiClient } from '../api/client';
+
+interface Member {
+  _id: string;
+>>>>>>> ac623c4 (created database)
   name: string;
   phone: string;
   email: string;
@@ -18,6 +29,11 @@ interface Member {
 export function Members() {
   const { user } = useAuth();
   const [searchQuery, setSearchQuery] = useState('');
+<<<<<<< HEAD
+=======
+  const [members, setMembers] = useState<Member[]>([]);
+  const [loading, setLoading] = useState(true);
+>>>>>>> ac623c4 (created database)
   const [deleteModal, setDeleteModal] = useState<{ open: boolean; member: Member | null }>({
     open: false,
     member: null,
@@ -31,6 +47,7 @@ export function Members() {
     member: null,
   });
 
+<<<<<<< HEAD
   const [members] = useState<Member[]>([
     {
       id: '1',
@@ -65,6 +82,23 @@ export function Members() {
       memberSince: '05/02/2025',
     },
   ]);
+=======
+  const fetchMembers = async () => {
+    try {
+      const data = await apiClient('/members');
+      setMembers(data);
+    } catch (error) {
+      console.error('Error fetching members:', error);
+      toast.error('Failed to load members');
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  useEffect(() => {
+    fetchMembers();
+  }, []);
+>>>>>>> ac623c4 (created database)
 
   const filteredMembers = members.filter(
     (member) =>
@@ -72,6 +106,7 @@ export function Members() {
       member.email.toLowerCase().includes(searchQuery.toLowerCase())
   );
 
+<<<<<<< HEAD
   const handleDelete = () => {
     toast.success(`Member ${deleteModal.member?.name} removed successfully!`);
   };
@@ -79,11 +114,56 @@ export function Members() {
   const handleSaveMember = (data: any) => {
     console.log('Saving member:', data);
     // Here you would save the member data
+=======
+  const handleDelete = async () => {
+    if (!deleteModal.member) return;
+    
+    try {
+      await apiClient(`/members/${deleteModal.member._id}`, {
+        method: 'DELETE',
+      });
+      toast.success(`Member ${deleteModal.member.name} removed successfully!`);
+      fetchMembers();
+    } catch (error: any) {
+      toast.error(error.message || 'Failed to remove member');
+    }
+  };
+
+  const handleSaveMember = async (data: any) => {
+    try {
+      if (memberModal.member) {
+        // Update
+        await apiClient(`/members/${memberModal.member._id}`, {
+          method: 'PUT',
+          body: JSON.stringify(data),
+        });
+        toast.success('Member updated successfully!');
+      } else {
+        // Create
+        await apiClient('/members', {
+          method: 'POST',
+          body: JSON.stringify(data),
+        });
+        toast.success('Member added successfully!');
+      }
+      fetchMembers();
+      setMemberModal({ open: false, member: null });
+    } catch (error: any) {
+      toast.error(error.message || 'Failed to save member');
+    }
+>>>>>>> ac623c4 (created database)
   };
 
   // Check permissions
   const canManage = user?.role === 'admin' || user?.role === 'librarian';
 
+<<<<<<< HEAD
+=======
+  if (loading) {
+    return <div className="flex items-center justify-center h-64">Loading...</div>;
+  }
+
+>>>>>>> ac623c4 (created database)
   return (
     <div className="space-y-6">
       {/* Header */}
@@ -150,7 +230,11 @@ export function Members() {
             </thead>
             <tbody className="divide-y divide-gray-200">
               {filteredMembers.map((member) => (
+<<<<<<< HEAD
                 <tr key={member.id} className="hover:bg-gray-50 transition-colors">
+=======
+                <tr key={member._id} className="hover:bg-gray-50 transition-colors">
+>>>>>>> ac623c4 (created database)
                   <td className="px-6 py-4">
                     <div className="flex items-center gap-3">
                       <div className="size-10 rounded-full bg-[#1B5E4B] text-white flex items-center justify-center font-semibold">
@@ -174,7 +258,13 @@ export function Members() {
                       {member.status === 'active' ? 'Active' : 'Inactive'}
                     </span>
                   </td>
+<<<<<<< HEAD
                   <td className="px-6 py-4 text-sm text-gray-600">{member.memberSince}</td>
+=======
+                  <td className="px-6 py-4 text-sm text-gray-600">
+                    {new Date(member.memberSince).toLocaleDateString('en-GB')}
+                  </td>
+>>>>>>> ac623c4 (created database)
                   {canManage && (
                     <td className="px-6 py-4">
                       <div className="flex items-center gap-2">
@@ -209,7 +299,11 @@ export function Members() {
       <div className="md:hidden space-y-4">
         {filteredMembers.map((member) => (
           <div
+<<<<<<< HEAD
             key={member.id}
+=======
+            key={member._id}
+>>>>>>> ac623c4 (created database)
             className="bg-white rounded-xl shadow-sm border border-gray-100 p-4"
           >
             <div className="flex items-start gap-3 mb-4">
@@ -240,7 +334,11 @@ export function Members() {
                 {member.email}
               </div>
               <div className="text-sm text-gray-500">
+<<<<<<< HEAD
                 Member since: {member.memberSince}
+=======
+                Member since: {new Date(member.memberSince).toLocaleDateString('en-GB')}
+>>>>>>> ac623c4 (created database)
               </div>
             </div>
 
@@ -299,4 +397,8 @@ export function Members() {
       />
     </div>
   );
+<<<<<<< HEAD
 }
+=======
+}
+>>>>>>> ac623c4 (created database)

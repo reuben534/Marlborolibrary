@@ -16,17 +16,24 @@ interface MemberModalProps {
 
 export function MemberModal({ open, onOpenChange, member, onSave }: MemberModalProps) {
   const [formData, setFormData] = useState({
+<<<<<<< HEAD
     fullName: '',
     idNumber: '',
     phone: '',
     email: '',
     address: '',
     emergencyContact: '',
+=======
+    name: '',
+    phone: '',
+    email: '',
+>>>>>>> ac623c4 (created database)
   });
 
   useEffect(() => {
     if (member) {
       setFormData({
+<<<<<<< HEAD
         fullName: member.name,
         idNumber: '',
         phone: member.phone,
@@ -42,6 +49,17 @@ export function MemberModal({ open, onOpenChange, member, onSave }: MemberModalP
         email: '',
         address: '',
         emergencyContact: '',
+=======
+        name: member.name,
+        phone: member.phone,
+        email: member.email,
+      });
+    } else {
+      setFormData({
+        name: '',
+        phone: '',
+        email: '',
+>>>>>>> ac623c4 (created database)
       });
     }
   }, [member, open]);
@@ -49,8 +67,11 @@ export function MemberModal({ open, onOpenChange, member, onSave }: MemberModalP
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     onSave(formData);
+<<<<<<< HEAD
     toast.success(member ? 'Member updated successfully!' : 'Member added successfully!');
     onOpenChange(false);
+=======
+>>>>>>> ac623c4 (created database)
   };
 
   if (!open) return null;
@@ -111,8 +132,13 @@ export function MemberModal({ open, onOpenChange, member, onSave }: MemberModalP
                   </label>
                   <input
                     type="text"
+<<<<<<< HEAD
                     value={formData.fullName}
                     onChange={(e) => setFormData({ ...formData, fullName: e.target.value })}
+=======
+                    value={formData.name}
+                    onChange={(e) => setFormData({ ...formData, name: e.target.value })}
+>>>>>>> ac623c4 (created database)
                     className="w-full px-4 py-2.5 rounded-lg border border-gray-300 focus:outline-none focus:ring-2 focus:ring-[#1B5E4B] focus:border-transparent"
                     placeholder="Enter full name"
                     required
@@ -121,6 +147,7 @@ export function MemberModal({ open, onOpenChange, member, onSave }: MemberModalP
 
                 <div>
                   <label className="block text-sm font-medium text-gray-700 mb-2">
+<<<<<<< HEAD
                     ID Number *
                   </label>
                   <input
@@ -135,6 +162,8 @@ export function MemberModal({ open, onOpenChange, member, onSave }: MemberModalP
 
                 <div>
                   <label className="block text-sm font-medium text-gray-700 mb-2">
+=======
+>>>>>>> ac623c4 (created database)
                     Phone Number *
                   </label>
                   <input
@@ -160,6 +189,7 @@ export function MemberModal({ open, onOpenChange, member, onSave }: MemberModalP
                     required
                   />
                 </div>
+<<<<<<< HEAD
 
                 <div className="md:col-span-2">
                   <label className="block text-sm font-medium text-gray-700 mb-2">
@@ -190,6 +220,8 @@ export function MemberModal({ open, onOpenChange, member, onSave }: MemberModalP
                     required
                   />
                 </div>
+=======
+>>>>>>> ac623c4 (created database)
               </div>
 
               {/* Buttons */}

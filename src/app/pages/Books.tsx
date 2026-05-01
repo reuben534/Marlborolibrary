@@ -1,12 +1,23 @@
+<<<<<<< HEAD
 import { useState } from 'react';
+=======
+import { useState, useEffect } from 'react';
+>>>>>>> ac623c4 (created database)
 import { useAuth } from '../context/AuthContext';
 import { Plus, Search, Edit, Trash2, BookOpen } from 'lucide-react';
 import { ConfirmModal } from '../components/ConfirmModal';
 import { BookModal } from '../components/BookModal';
 import { toast } from 'sonner';
+<<<<<<< HEAD
 
 interface Book {
   id: string;
+=======
+import { apiClient } from '../api/client';
+
+interface Book {
+  _id: string;
+>>>>>>> ac623c4 (created database)
   title: string;
   author: string;
   isbn: string;
@@ -18,6 +29,11 @@ interface Book {
 export function Books() {
   const { user } = useAuth();
   const [searchQuery, setSearchQuery] = useState('');
+<<<<<<< HEAD
+=======
+  const [books, setBooks] = useState<Book[]>([]);
+  const [loading, setLoading] = useState(true);
+>>>>>>> ac623c4 (created database)
   const [deleteModal, setDeleteModal] = useState<{ open: boolean; book: Book | null }>({
     open: false,
     book: null,
@@ -28,6 +44,7 @@ export function Books() {
     book: null,
   });
 
+<<<<<<< HEAD
   const [books] = useState<Book[]>([
     {
       id: '1',
@@ -75,6 +92,23 @@ export function Books() {
       status: 'available',
     },
   ]);
+=======
+  const fetchBooks = async () => {
+    try {
+      const data = await apiClient('/books');
+      setBooks(data);
+    } catch (error) {
+      console.error('Error fetching books:', error);
+      toast.error('Failed to load books');
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  useEffect(() => {
+    fetchBooks();
+  }, []);
+>>>>>>> ac623c4 (created database)
 
   const filteredBooks = books.filter(
     (book) =>
@@ -83,6 +117,7 @@ export function Books() {
       book.isbn.includes(searchQuery)
   );
 
+<<<<<<< HEAD
   const handleDelete = () => {
     toast.success(`Book "${deleteModal.book?.title}" removed successfully!`);
   };
@@ -90,6 +125,44 @@ export function Books() {
   const handleSaveBook = (data: any) => {
     console.log('Saving book:', data);
     // Here you would save the book data
+=======
+  const handleDelete = async () => {
+    if (!deleteModal.book) return;
+    
+    try {
+      await apiClient(`/books/${deleteModal.book._id}`, {
+        method: 'DELETE',
+      });
+      toast.success(`Book "${deleteModal.book.title}" removed successfully!`);
+      fetchBooks();
+    } catch (error: any) {
+      toast.error(error.message || 'Failed to remove book');
+    }
+  };
+
+  const handleSaveBook = async (data: any) => {
+    try {
+      if (bookModal.book) {
+        // Update
+        await apiClient(`/books/${bookModal.book._id}`, {
+          method: 'PUT',
+          body: JSON.stringify(data),
+        });
+        toast.success('Book updated successfully!');
+      } else {
+        // Create
+        await apiClient('/books', {
+          method: 'POST',
+          body: JSON.stringify(data),
+        });
+        toast.success('Book added successfully!');
+      }
+      fetchBooks();
+      setBookModal({ open: false, book: null });
+    } catch (error: any) {
+      toast.error(error.message || 'Failed to save book');
+    }
+>>>>>>> ac623c4 (created database)
   };
 
   const canManage = user?.role === 'admin' || user?.role === 'librarian';
@@ -112,6 +185,13 @@ export function Books() {
     );
   };
 
+<<<<<<< HEAD
+=======
+  if (loading) {
+    return <div className="flex items-center justify-center h-64">Loading...</div>;
+  }
+
+>>>>>>> ac623c4 (created database)
   return (
     <div className="space-y-6">
       {/* Header */}
@@ -176,7 +256,11 @@ export function Books() {
             </thead>
             <tbody className="divide-y divide-gray-200">
               {filteredBooks.map((book) => (
+<<<<<<< HEAD
                 <tr key={book.id} className="hover:bg-gray-50 transition-colors">
+=======
+                <tr key={book._id} className="hover:bg-gray-50 transition-colors">
+>>>>>>> ac623c4 (created database)
                   <td className="px-6 py-4">
                     <div className="flex items-center gap-3">
                       <div className="size-10 rounded-lg bg-[#1B5E4B] text-white flex items-center justify-center">
@@ -219,7 +303,11 @@ export function Books() {
       <div className="md:hidden space-y-4">
         {filteredBooks.map((book) => (
           <div
+<<<<<<< HEAD
             key={book.id}
+=======
+            key={book._id}
+>>>>>>> ac623c4 (created database)
             className="bg-white rounded-xl shadow-sm border border-gray-100 p-4"
           >
             <div className="flex items-start gap-3 mb-3">
@@ -284,4 +372,8 @@ export function Books() {
       />
     </div>
   );
+<<<<<<< HEAD
 }
+=======
+}
+>>>>>>> ac623c4 (created database)
