@@ -1,10 +1,10 @@
-import { createContext, useContext, useState, ReactNode, useEffect } from 'react';
+import { createContext, useContext, useState, ReactNode, useEffect, useMemo } from 'react';
 import { apiClient } from '../api/client';
 
 export type UserRole = 'admin' | 'librarian' | 'member';
 
 export interface User {
-  _id: string; // using backend ID
+  _id: string; // backend ID
   username: string;
   fullName: string;
   email: string;
@@ -34,7 +34,7 @@ export interface RegisterData {
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
-export function AuthProvider({ children }: { children: ReactNode }) {
+export function AuthProvider({ children }: { readonly children: ReactNode }) {
   const [user, setUser] = useState<User | null>(null);
   const [loading, setLoading] = useState(true);
 
@@ -91,8 +91,14 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     setUser(updatedUser);
   };
 
+  // ✅ useMemo to prevent unnecessary re-renders
+  const contextValue = useMemo(
+    () => ({ user, loading, login, logout, register, updateProfile }),
+    [user, loading]
+  );
+
   return (
-    <AuthContext.Provider value={{ user, loading, login, logout, register, updateProfile }}>
+    <AuthContext.Provider value={contextValue}>
       {!loading && children}
     </AuthContext.Provider>
   );
