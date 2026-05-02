@@ -195,7 +195,7 @@ export function ComputerBooking() {
     booked: computers.filter(c => c.status === 'booked').length,
     inUse: computers.filter(c => c.status === 'in-use').length,
     maintenance: computers.filter(c => c.status === 'maintenance').length,
-    myBookings: user?.role === 'member' ? bookings.filter(b => b.memberId === user.id).length : 0,
+    myBookings: user?.role === 'member' ? bookings.filter(b => b.memberId === user._id).length : 0,
   };
 
   const getStatusColor = (status: Computer['status']) => {
