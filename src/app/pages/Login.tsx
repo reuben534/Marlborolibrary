@@ -12,17 +12,6 @@ export function Login() {
   const { login } = useAuth();
   const navigate = useNavigate();
 
-<<<<<<< HEAD
-  const handleSubmit = (e: React.FormEvent) => {
-    e.preventDefault();
-    setError('');
-
-    const success = login(username, password, role);
-    if (success) {
-      navigate('/dashboard');
-    } else {
-      setError('Invalid credentials. Use: admin/librarian/member with password "password"');
-=======
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setError('');
@@ -32,7 +21,6 @@ export function Login() {
       navigate('/dashboard');
     } catch (err: any) {
       setError(err.message || 'Invalid credentials.');
->>>>>>> ac623c4 (created database)
     }
   };
 
@@ -131,19 +119,6 @@ export function Login() {
               </Link>
             </div>
           </div>
-
-<<<<<<< HEAD
-          {/* Demo Info */}
-          <div className="mt-6 p-4 bg-gray-50 rounded-lg">
-            <p className="text-xs text-gray-600 font-medium mb-2">Demo credentials:</p>
-            <div className="text-xs text-gray-500 space-y-1">
-              <p>• Admin: <span className="font-mono">admin / password</span></p>
-              <p>• Librarian: <span className="font-mono">librarian / password</span></p>
-              <p>• Member: <span className="font-mono">member / password</span></p>
-            </div>
-          </div>
-=======
->>>>>>> ac623c4 (created database)
         </div>
       </div>
     </div>
