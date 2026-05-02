@@ -7,10 +7,7 @@ export function Register() {
   const [formData, setFormData] = useState({
     fullName: '',
     username: '',
-<<<<<<< HEAD
-=======
     email: '',
->>>>>>> ac623c4 (created database)
     password: '',
     confirmPassword: '',
     role: 'member' as UserRole,
@@ -20,11 +17,7 @@ export function Register() {
   const { register } = useAuth();
   const navigate = useNavigate();
 
-<<<<<<< HEAD
-  const handleSubmit = (e: React.FormEvent) => {
-=======
   const handleSubmit = async (e: React.FormEvent) => {
->>>>>>> ac623c4 (created database)
     e.preventDefault();
     setError('');
 
@@ -38,19 +31,11 @@ export function Register() {
       return;
     }
 
-<<<<<<< HEAD
-    const success = register(formData);
-    if (success) {
-      navigate('/dashboard');
-    } else {
-      setError('Error creating account. Please try again.');
-=======
     try {
       await register(formData);
       navigate('/dashboard');
     } catch (err: any) {
       setError(err.message || 'Error creating account.');
->>>>>>> ac623c4 (created database)
     }
   };
 
@@ -100,8 +85,6 @@ export function Register() {
 
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-2">
-<<<<<<< HEAD
-=======
                   Email *
                 </label>
                 <input
@@ -116,7 +99,6 @@ export function Register() {
 
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-2">
->>>>>>> ac623c4 (created database)
                   Password *
                 </label>
                 <input
