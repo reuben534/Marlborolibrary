@@ -17,6 +17,26 @@ export function Register() {
   const { register } = useAuth();
   const navigate = useNavigate();
 
+  const handleFileChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+
+    const formData = new FormData();
+    formData.append('photo', file);
+
+    try {
+      const result = await apiClient('/upload', {
+        method: 'POST',
+        body: formData as any,
+      });
+      setFormData((prev) => ({ ...prev, photo: result.url }));
+      toast.success('Photo uploaded successfully');
+    } catch (err) {
+      console.error(err);
+      toast.error('Failed to upload photo');
+    }
+  };
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setError('');
@@ -151,7 +171,7 @@ export function Register() {
                 <label className="w-full px-4 py-3 rounded-lg border border-gray-300 flex items-center gap-2 cursor-pointer hover:bg-gray-50 transition-colors">
                   <Upload className="size-5 text-gray-500" />
                   <span className="text-gray-600 text-sm">Choose photo</span>
-                  <input type="file" className="hidden" accept="image/*" />
+                  <input type="file" className="hidden" accept="image/*" onChange={handleFileChange} />
                 </label>
               </div>
             </div>
