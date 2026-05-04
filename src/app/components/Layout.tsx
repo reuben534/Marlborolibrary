@@ -1,6 +1,7 @@
 import { ReactNode, useState } from 'react';
 import { Link, useLocation, useNavigate } from 'react-router';
 import { useAuth } from '../context/AuthContext';
+import { IMAGE_BASE_URL } from '../api/client';
 import {
   LayoutDashboard,
   Users,
@@ -81,8 +82,20 @@ export function Layout({ children }: LayoutProps) {
 
         <div className="p-4 border-t border-white/10">
           <div className="flex items-center gap-3 mb-3">
-            <div className="size-10 rounded-full bg-white/20 flex items-center justify-center text-white font-semibold">
-              {user?.fullName.charAt(0)}
+            <div className="size-10 rounded-full bg-white/20 flex items-center justify-center text-white font-semibold overflow-hidden">
+              {user?.photo || user?.role ? (
+                <img
+                  src={user?.photo ? `${IMAGE_BASE_URL}${user.photo}` : `${IMAGE_BASE_URL}/images/${user?.role === 'admin' ? 'Admin' : user?.role === 'librarian' ? 'Librarian' : 'Member'}.jpg`}
+                  alt={user?.fullName}
+                  className="size-full object-cover"
+                  onError={(e) => {
+                    e.currentTarget.style.display = 'none';
+                    e.currentTarget.parentElement?.insertAdjacentText('beforeend', user?.fullName.charAt(0) || '');
+                  }}
+                />
+              ) : (
+                user?.fullName.charAt(0)
+              )}
             </div>
             <div>
               <p className="text-white text-sm font-medium">{user?.fullName}</p>
@@ -137,8 +150,20 @@ export function Layout({ children }: LayoutProps) {
 
           <div className="border-t border-white/10 pt-4">
             <div className="flex items-center gap-3 mb-4">
-              <div className="size-12 rounded-full bg-white/20 flex items-center justify-center text-white font-semibold text-lg">
-                {user?.fullName.charAt(0)}
+              <div className="size-12 rounded-full bg-white/20 flex items-center justify-center text-white font-semibold text-lg overflow-hidden">
+                {user?.photo || user?.role ? (
+                  <img
+                    src={user?.photo ? `${IMAGE_BASE_URL}${user.photo}` : `${IMAGE_BASE_URL}/images/${user?.role === 'admin' ? 'Admin' : user?.role === 'librarian' ? 'Librarian' : 'Member'}.jpg`}
+                    alt={user?.fullName}
+                    className="size-full object-cover"
+                    onError={(e) => {
+                      e.currentTarget.style.display = 'none';
+                      e.currentTarget.parentElement?.insertAdjacentText('beforeend', user?.fullName.charAt(0) || '');
+                    }}
+                  />
+                ) : (
+                  user?.fullName.charAt(0)
+                )}
               </div>
               <div>
                 <p className="text-white font-medium">{user?.fullName}</p>

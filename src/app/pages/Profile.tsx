@@ -2,7 +2,7 @@ import { useState } from 'react';
 import { useAuth } from '../context/AuthContext';
 import { Camera, Save } from 'lucide-react';
 import { toast } from 'sonner';
-import { apiClient } from '../api/client';
+import { apiClient, IMAGE_BASE_URL } from '../api/client';
 
 export function Profile() {
   const { user, updateProfile } = useAuth();
@@ -14,9 +14,9 @@ export function Profile() {
 
   const getRoleImage = () => {
     switch (user?.role) {
-      case 'admin': return '/images/Admin.jpg';
-      case 'librarian': return '/images/Librarian.jpg';
-      default: return '/images/Member.jpg';
+      case 'admin': return `${IMAGE_BASE_URL}/images/Admin.jpg`;
+      case 'librarian': return `${IMAGE_BASE_URL}/images/Librarian.jpg`;
+      default: return `${IMAGE_BASE_URL}/images/Member.jpg`;
     }
   };
 
@@ -31,6 +31,9 @@ export function Profile() {
       const result = await apiClient('/upload', {
         method: 'POST',
         body: formData as any,
+        headers: {
+          'Content-Type': '',
+        }
       });
       await updateProfile({ photo: result.url });
       toast.success('Profile photo updated successfully!');
@@ -63,7 +66,7 @@ export function Profile() {
             <div className="relative">
               <div className="size-32 rounded-full bg-white border-4 border-white shadow-lg flex items-center justify-center text-[#1B5E4B] text-4xl font-bold overflow-hidden">
                 <img
-                  src={user?.photo ? `http://localhost:5000${user.photo}` : getRoleImage()}
+                  src={user?.photo ? `${IMAGE_BASE_URL}${user.photo}` : getRoleImage()}
                   alt={user?.fullName}
                   className="size-full object-cover"
                   onError={(e) => {
