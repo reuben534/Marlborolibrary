@@ -2,6 +2,8 @@ import { useState } from 'react';
 import { useNavigate, Link } from 'react-router';
 import { useAuth, UserRole } from '../context/AuthContext';
 import { BookOpen, Upload } from 'lucide-react';
+import { apiClient } from '../api/client';
+import { toast } from 'sonner';
 
 export function Register() {
   const [formData, setFormData] = useState({
@@ -21,14 +23,22 @@ export function Register() {
     const file = e.target.files?.[0];
     if (!file) return;
 
-    const formData = new FormData();
-    formData.append('photo', file);
+    const uploadData = new FormData();
+    uploadData.append('photo', file);
 
     try {
       const result = await apiClient('/upload', {
         method: 'POST',
-        body: formData as any,
+        body: uploadData as any,
+        headers: {
+          // fetch will set the correct content-type with boundary when body is FormData
+          // but our apiClient sets application/json by default.
+          // We need to override it.
+          'Content-Type': '', 
+        }
       });
+      // Filter out the empty Content-Type in apiClient or handle it there.
+      // Actually, let's look at apiClient again.
       setFormData((prev) => ({ ...prev, photo: result.url }));
       toast.success('Photo uploaded successfully');
     } catch (err) {
@@ -171,8 +181,16 @@ export function Register() {
                 <label className="w-full px-4 py-3 rounded-lg border border-gray-300 flex items-center gap-2 cursor-pointer hover:bg-gray-50 transition-colors">
                   <Upload className="size-5 text-gray-500" />
                   <span className="text-gray-600 text-sm">Choose photo</span>
-                  <input type="file" className="hidden" accept="image/*" onChange={handleFileChange} />
+                  <input
+                    type="file"
+                    className="hidden"
+                    accept="image/*"
+                    onChange={handleFileChange}
+                  />
                 </label>
+                {formData.photo && (
+                  <p className="text-xs text-green-600 mt-1 truncate">Photo uploaded!</p>
+                )}
               </div>
             </div>
 

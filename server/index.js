@@ -8,6 +8,7 @@ import memberRoutes from './routes/memberRoutes.js';
 import bookRoutes from './routes/bookRoutes.js';
 import transactionRoutes from './routes/transactionRoutes.js';
 import dashboardRoutes from './routes/dashboardRoutes.js';
+import uploadRoutes from './routes/uploadRoutes.js';
 
 // Load environment variables
 dotenv.config();
@@ -20,12 +21,16 @@ app.use(cors());
 app.use(express.json());
 app.use(morgan('dev'));
 
+// Serve static images
+app.use('/images', express.static('../images'));
+
 // Routes
 app.use('/api/auth', authRoutes);
 app.use('/api/members', memberRoutes);
 app.use('/api/books', bookRoutes);
 app.use('/api/transactions', transactionRoutes);
 app.use('/api/dashboard', dashboardRoutes);
+app.use('/api/upload', uploadRoutes);
 
 // Basic route
 app.get('/', (req, res) => {
