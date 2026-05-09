@@ -9,6 +9,8 @@ import bookRoutes from './routes/bookRoutes.js';
 import transactionRoutes from './routes/transactionRoutes.js';
 import dashboardRoutes from './routes/dashboardRoutes.js';
 import uploadRoutes from './routes/uploadRoutes.js';
+import computerRoutes from './routes/computerRoutes.js';
+import { notFound, errorHandler } from './middleware/errorMiddleware.js';
 
 // Load environment variables
 dotenv.config();
@@ -31,6 +33,11 @@ app.use('/api/books', bookRoutes);
 app.use('/api/transactions', transactionRoutes);
 app.use('/api/dashboard', dashboardRoutes);
 app.use('/api/upload', uploadRoutes);
+app.use('/api/computers', computerRoutes);
+
+// Error Handling Middleware
+app.use(notFound);
+app.use(errorHandler);
 
 // Basic route
 app.get('/', (req, res) => {

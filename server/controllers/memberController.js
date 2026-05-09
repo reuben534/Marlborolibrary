@@ -1,98 +1,110 @@
 import Member from '../models/Member.js';
+import { asyncHandler } from '../middleware/asyncHandler.js';
 
 // @desc    Get all members
 // @route   GET /api/members
 // @access  Private (Admin/Librarian)
-export const getMembers = async (req, res) => {
-  try {
-    const members = await Member.find({});
-    res.json(members);
-  } catch (error) {
-    res.status(500).json({ message: error.message });
-  }
-};
+export const getMembers = asyncHandler(async (req, res) => {
+  const members = await Member.find({});
+  res.json(members);
+});
 
 // @desc    Get single member
 // @route   GET /api/members/:id
 // @access  Private (Admin/Librarian)
-export const getMemberById = async (req, res) => {
-  try {
-    const member = await Member.findById(req.params.id);
-    if (member) {
-      res.json(member);
-    } else {
-      res.status(404).json({ message: 'Member not found' });
-    }
-  } catch (error) {
-    res.status(500).json({ message: error.message });
+export const getMemberById = asyncHandler(async (req, res) => {
+  const member = await Member.findById(req.params.id);
+  if (member) {
+    res.json(member);
+  } else {
+    res.status(404);
+    throw new Error('Member not found');
   }
-};
+});
 
 // @desc    Create a member
 // @route   POST /api/members
 // @access  Private (Admin/Librarian)
-export const createMember = async (req, res) => {
+export const createMember = asyncHandler(async (req, res) => {
   const { name, phone, email, status } = req.body;
 
-  try {
-    const memberExists = await Member.findOne({ email });
-
-    if (memberExists) {
-      return res.status(400).json({ message: 'Member already exists with this email' });
-    }
-
-    const member = await Member.create({
-      name,
-      phone,
-      email,
-      status: status || 'active',
-    });
-
-    res.status(201).json(member);
-  } catch (error) {
-    res.status(500).json({ message: error.message });
+  if (!name || !phone || !email) {
+    res.status(400);
+    throw new Error('Please provide name, phone, and email');
   }
-};
+
+  // Basic email validation
+  const emailRegex = /^\S+@\S+\.\S+$/;
+  if (!emailRegex.test(email)) {
+    res.status(400);
+    throw new Error('Please provide a valid email address');
+  }
+
+  const memberExists = await Member.findOne({ email });
+
+  if (memberExists) {
+    res.status(400);
+    throw new Error('Member already exists with this email');
+  }
+
+  const member = await Member.create({
+    name,
+    phone,
+    email,
+    status: status || 'active',
+  });
+
+  res.status(201).json(member);
+});
 
 // @desc    Update a member
 // @route   PUT /api/members/:id
 // @access  Private (Admin/Librarian)
-export const updateMember = async (req, res) => {
+export const updateMember = asyncHandler(async (req, res) => {
   const { name, phone, email, status } = req.body;
 
-  try {
-    const member = await Member.findById(req.params.id);
+  const member = await Member.findById(req.params.id);
 
-    if (member) {
-      member.name = name || member.name;
-      member.phone = phone || member.phone;
-      member.email = email || member.email;
-      member.status = status || member.status;
+  if (member) {
+    if (email) {
+      const emailRegex = /^\S+@\S+\.\S+$/;
+      if (!emailRegex.test(email)) {
+        res.status(400);
+        throw new Error('Please provide a valid email address');
+      }
 
-      const updatedMember = await member.save();
-      res.json(updatedMember);
-    } else {
-      res.status(404).json({ message: 'Member not found' });
+      // Check if email is taken by another member
+      const emailExists = await Member.findOne({ email, _id: { $ne: req.params.id } });
+      if (emailExists) {
+        res.status(400);
+        throw new Error('Email is already in use by another member');
+      }
     }
-  } catch (error) {
-    res.status(500).json({ message: error.message });
+
+    member.name = name || member.name;
+    member.phone = phone || member.phone;
+    member.email = email || member.email;
+    member.status = status || member.status;
+
+    const updatedMember = await member.save();
+    res.json(updatedMember);
+  } else {
+    res.status(404);
+    throw new Error('Member not found');
   }
-};
+});
 
 // @desc    Delete a member
 // @route   DELETE /api/members/:id
 // @access  Private (Admin/Librarian)
-export const deleteMember = async (req, res) => {
-  try {
-    const member = await Member.findById(req.params.id);
+export const deleteMember = asyncHandler(async (req, res) => {
+  const member = await Member.findById(req.params.id);
 
-    if (member) {
-      await member.deleteOne();
-      res.json({ message: 'Member removed' });
-    } else {
-      res.status(404).json({ message: 'Member not found' });
-    }
-  } catch (error) {
-    res.status(500).json({ message: error.message });
+  if (member) {
+    await member.deleteOne();
+    res.json({ message: 'Member removed' });
+  } else {
+    res.status(404);
+    throw new Error('Member not found');
   }
-};
+});

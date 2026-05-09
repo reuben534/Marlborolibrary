@@ -1,6 +1,5 @@
 import { useState, useEffect } from 'react';
-import { X, Upload, User, Save } from 'lucide-react';
-import { toast } from 'sonner';
+import { X, Upload, User, Save, Loader2 } from 'lucide-react';
 
 interface MemberModalProps {
   open: boolean;
@@ -11,7 +10,7 @@ interface MemberModalProps {
     phone: string;
     email: string;
   } | null;
-  onSave: (data: any) => void;
+  onSave: (data: any) => Promise<void>;
 }
 
 export function MemberModal({ open, onOpenChange, member, onSave }: MemberModalProps) {
@@ -20,44 +19,72 @@ export function MemberModal({ open, onOpenChange, member, onSave }: MemberModalP
     phone: '',
     email: '',
   });
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [errors, setErrors] = useState<Record<string, string>>({});
 
   useEffect(() => {
-    if (member) {
+    if (member && open) {
       setFormData({
-        name: member.name,
-        phone: member.phone,
-        email: member.email,
+        name: member.name || '',
+        phone: member.phone || '',
+        email: member.email || '',
       });
-    } else {
+      setErrors({});
+    } else if (open) {
       setFormData({
         name: '',
         phone: '',
         email: '',
       });
+      setErrors({});
     }
   }, [member, open]);
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const validateForm = () => {
+    const newErrors: Record<string, string> = {};
+    if (!formData.name.trim()) newErrors.name = 'Full name is required';
+    if (!formData.phone.trim()) newErrors.phone = 'Phone number is required';
+    
+    if (!formData.email.trim()) {
+      newErrors.email = 'Email address is required';
+    } else {
+      const emailRegex = /^\S+@\S+\.\S+$/;
+      if (!emailRegex.test(formData.email)) {
+        newErrors.email = 'Please enter a valid email address';
+      }
+    }
+
+    setErrors(newErrors);
+    return Object.keys(newErrors).length === 0;
+  };
+
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    onSave(formData);
-    toast.success(member ? 'Member updated successfully!' : 'Member added successfully!');
-    onOpenChange(false);
+    if (!validateForm()) return;
+
+    setIsSubmitting(true);
+    try {
+      await onSave(formData);
+      onOpenChange(false);
+    } catch (error) {
+      console.error('Save failed:', error);
+    } finally {
+      setIsSubmitting(false);
+    }
   };
 
   if (!open) return null;
 
   return (
     <>
-      {/* Backdrop */}
       <div
         className="fixed inset-0 bg-black/50 z-40 animate-fade-in"
-        onClick={() => onOpenChange(false)}
+        onClick={() => !isSubmitting && onOpenChange(false)}
       />
 
-      {/* Modal */}
       <div className="fixed inset-0 z-50 overflow-y-auto">
         <div className="min-h-screen px-4 flex items-center justify-center">
-          <div className="bg-white rounded-2xl shadow-2xl w-full max-w-3xl animate-scale-in transform -translate-x-1/2 -translate-y-1/2 fixed top-1/2 left-1/2">
+          <div className="bg-white rounded-2xl shadow-2xl w-full max-w-3xl animate-scale-in">
             {/* Header */}
             <div className="flex items-center justify-between p-6 border-b border-gray-200">
               <div className="flex items-center gap-3">
@@ -75,7 +102,8 @@ export function MemberModal({ open, onOpenChange, member, onSave }: MemberModalP
               </div>
               <button
                 onClick={() => onOpenChange(false)}
-                className="p-2 hover:bg-gray-100 rounded-lg transition-colors"
+                disabled={isSubmitting}
+                className="p-2 hover:bg-gray-100 rounded-lg transition-colors disabled:opacity-50"
               >
                 <X className="size-5 text-gray-500" />
               </button>
@@ -83,20 +111,8 @@ export function MemberModal({ open, onOpenChange, member, onSave }: MemberModalP
 
             {/* Form */}
             <form onSubmit={handleSubmit} className="p-6 max-h-[70vh] overflow-y-auto">
-              {/* Photo Upload */}
-              <div className="flex flex-col items-center gap-4 pb-6 mb-6 border-b border-gray-200">
-                <div className="size-20 rounded-full bg-gray-100 border-2 border-dashed border-gray-300 flex items-center justify-center">
-                  <User className="size-10 text-gray-400" />
-                </div>
-                <label className="px-4 py-2 bg-gray-100 text-gray-700 rounded-lg text-sm font-medium hover:bg-gray-200 transition-colors cursor-pointer">
-                  <Upload className="size-4 inline-block mr-2" />
-                  Upload Photo
-                  <input type="file" className="hidden" accept="image/*" />
-                </label>
-              </div>
-
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                <div>
+                <div className="md:col-span-2">
                   <label className="block text-sm font-medium text-gray-700 mb-2">
                     Full Name *
                   </label>
@@ -104,10 +120,11 @@ export function MemberModal({ open, onOpenChange, member, onSave }: MemberModalP
                     type="text"
                     value={formData.name}
                     onChange={(e) => setFormData({ ...formData, name: e.target.value })}
-                    className="w-full px-4 py-2.5 rounded-lg border border-gray-300 focus:outline-none focus:ring-2 focus:ring-[#1B5E4B] focus:border-transparent"
+                    className={`w-full px-4 py-2.5 rounded-lg border ${errors.name ? 'border-red-500' : 'border-gray-300'} focus:outline-none focus:ring-2 focus:ring-[#1B5E4B] focus:border-transparent`}
                     placeholder="Enter full name"
-                    required
+                    disabled={isSubmitting}
                   />
+                  {errors.name && <p className="text-red-500 text-xs mt-1">{errors.name}</p>}
                 </div>
 
                 <div>
@@ -118,10 +135,11 @@ export function MemberModal({ open, onOpenChange, member, onSave }: MemberModalP
                     type="tel"
                     value={formData.phone}
                     onChange={(e) => setFormData({ ...formData, phone: e.target.value })}
-                    className="w-full px-4 py-2.5 rounded-lg border border-gray-300 focus:outline-none focus:ring-2 focus:ring-[#1B5E4B] focus:border-transparent"
+                    className={`w-full px-4 py-2.5 rounded-lg border ${errors.phone ? 'border-red-500' : 'border-gray-300'} focus:outline-none focus:ring-2 focus:ring-[#1B5E4B] focus:border-transparent`}
                     placeholder="+44 20 7946 0000"
-                    required
+                    disabled={isSubmitting}
                   />
+                  {errors.phone && <p className="text-red-500 text-xs mt-1">{errors.phone}</p>}
                 </div>
 
                 <div>
@@ -132,10 +150,11 @@ export function MemberModal({ open, onOpenChange, member, onSave }: MemberModalP
                     type="email"
                     value={formData.email}
                     onChange={(e) => setFormData({ ...formData, email: e.target.value })}
-                    className="w-full px-4 py-2.5 rounded-lg border border-gray-300 focus:outline-none focus:ring-2 focus:ring-[#1B5E4B] focus:border-transparent"
+                    className={`w-full px-4 py-2.5 rounded-lg border ${errors.email ? 'border-red-500' : 'border-gray-300'} focus:outline-none focus:ring-2 focus:ring-[#1B5E4B] focus:border-transparent`}
                     placeholder="email@example.com"
-                    required
+                    disabled={isSubmitting}
                   />
+                  {errors.email && <p className="text-red-500 text-xs mt-1">{errors.email}</p>}
                 </div>
               </div>
 
@@ -143,15 +162,21 @@ export function MemberModal({ open, onOpenChange, member, onSave }: MemberModalP
               <div className="flex gap-3 pt-6 mt-6 border-t border-gray-200">
                 <button
                   type="submit"
-                  className="flex-1 flex items-center justify-center gap-2 px-6 py-3 bg-[#1B5E4B] text-white rounded-lg font-medium hover:bg-[#15523f] transition-colors"
+                  disabled={isSubmitting}
+                  className="flex-1 flex items-center justify-center gap-2 px-6 py-3 bg-[#1B5E4B] text-white rounded-lg font-medium hover:bg-[#15523f] transition-colors disabled:opacity-50"
                 >
-                  <Save className="size-5" />
+                  {isSubmitting ? (
+                    <Loader2 className="size-5 animate-spin" />
+                  ) : (
+                    <Save className="size-5" />
+                  )}
                   {member ? 'Save Changes' : 'Add Member'}
                 </button>
                 <button
                   type="button"
                   onClick={() => onOpenChange(false)}
-                  className="flex-1 px-6 py-3 bg-gray-100 text-gray-700 rounded-lg font-medium hover:bg-gray-200 transition-colors"
+                  disabled={isSubmitting}
+                  className="flex-1 px-6 py-3 bg-gray-100 text-gray-700 rounded-lg font-medium hover:bg-gray-200 transition-colors disabled:opacity-50"
                 >
                   Cancel
                 </button>

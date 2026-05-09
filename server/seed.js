@@ -4,6 +4,8 @@ import bcrypt from 'bcryptjs';
 import User from './models/User.js';
 import Book from './models/Book.js';
 import Member from './models/Member.js';
+import Computer from './models/Computer.js';
+import ComputerBooking from './models/ComputerBooking.js';
 
 dotenv.config();
 
@@ -16,6 +18,8 @@ const seedData = async () => {
     await User.deleteMany({});
     await Book.deleteMany({});
     await Member.deleteMany({});
+    await Computer.deleteMany({});
+    await ComputerBooking.deleteMany({});
 
     // Hash password
     const salt = await bcrypt.genSalt(10);
@@ -128,6 +132,36 @@ const seedData = async () => {
     ];
     await Member.insertMany(members);
     console.log('Members seeded successfully');
+
+    // Seed Computers
+    const computers = [
+      {
+        name: 'Computer 01',
+        location: 'Main Floor - Section A',
+        specifications: 'Intel i7, 16GB RAM, Windows 11',
+        status: 'available',
+      },
+      {
+        name: 'Computer 02',
+        location: 'Main Floor - Section A',
+        specifications: 'Intel i5, 8GB RAM, Windows 11',
+        status: 'available',
+      },
+      {
+        name: 'Computer 03',
+        location: 'Main Floor - Section B',
+        specifications: 'Intel i7, 16GB RAM, macOS',
+        status: 'available',
+      },
+      {
+        name: 'Computer 04',
+        location: 'Study Room 1',
+        specifications: 'Intel i5, 8GB RAM, Ubuntu',
+        status: 'maintenance',
+      },
+    ];
+    await Computer.insertMany(computers);
+    console.log('Computers seeded successfully');
 
     console.log('Seeding completed successfully!');
     process.exit();
