@@ -751,7 +751,33 @@ The application supports three distinct user roles (Administrator, Librarian, an
 
 ---
 
-### 4.10 System Settings (FR-SET) - Admin Only
+### 4.10 Computer Booking System (FR-COMP)
+
+#### FR-COMP-001: Manage Computers
+**Description:** Administrators and Librarians can manage the list of available computers.
+
+**Requirements:**
+- Add new computers with name, location, and specifications.
+- Edit existing computer details and status (Available, Booked, In-Use, Maintenance).
+- Delete computers (only if no active bookings exist).
+
+#### FR-COMP-002: Book Computer
+**Description:** Members and Staff can reserve computers for specific time slots.
+
+**Requirements:**
+- Search and filter available computers.
+- Select a date and a 1-hour time slot.
+- Provide a purpose for the booking.
+- Real-time availability check to prevent double bookings.
+
+#### FR-COMP-003: View and Cancel Bookings
+**Description:** Users can view their upcoming bookings and cancel them if needed.
+
+**Requirements:**
+- Dashboard display of upcoming reservations.
+- Cancellation functionality with immediate status update.
+
+### 4.11 System Settings (FR-SET) - Admin Only
 
 #### FR-SET-001: Library Information
 **Description:** Configure basic library details.

@@ -17,12 +17,12 @@ The original design is available at [Figma](https://www.figma.com/design/MKr3fUl
 
 - **Frontend:** React 18, TypeScript, Tailwind CSS v4, Vite, Lucide Icons, Sonner.
 - **Backend:** Node.js, Express.js, Mongoose.
-- **Database:** MongoDB (Local or Atlas).
+- **Database:** MongoDB Atlas (Cloud) or Local MongoDB.
 
 ## 📋 Prerequisites
 
 - **Node.js** (v18 or higher)
-- **MongoDB** (Local instance running on port 27017 or a MongoDB Atlas account)
+- **MongoDB Atlas Account** (Recommended) or local MongoDB instance.
 
 ## ⚙️ Installation & Setup
 
@@ -40,12 +40,12 @@ cd server
 npm install
 ```
 
-Create a `.env` file in the `server` directory:
+Create a `.env` file in the `server` directory with your Atlas connection string:
 
 ```env
 PORT=5000
-MONGODB_URI=mongodb://127.0.0.1:27017/marlboro_library
-JWT_SECRET=your_secret_key_here
+MONGODB_URI=mongodb+srv://<username>:<password>@cluster.mongodb.net/marlboro_library
+JWT_SECRET=your_secret_key
 NODE_ENV=development
 ```
 

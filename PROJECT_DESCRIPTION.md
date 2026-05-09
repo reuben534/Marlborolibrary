@@ -52,6 +52,13 @@ The application supports **three distinct user roles** with specific permissions
 - Book condition assessment
 - Fine management
 
+### 🖥️ **Computer Booking System**
+- Real-time availability of library computers
+- Member self-service booking for study/research
+- Administrative management of computer hardware
+- Status tracking (Available, Booked, In-Use, Maintenance)
+- Secure booking validation and scheduling
+
 ### 📊 **Borrowing History & Reports**
 - Complete transaction history
 - Advanced filtering (status, date range, member, book)
@@ -579,8 +586,6 @@ Info: #3B82F6
 ## 🚧 Known Limitations
 
 **Current Version (1.0.0):**
-- ⚠️ Demo mode: No persistent database (data resets on refresh)
-- ⚠️ Mock authentication (production will use proper backend)
 - ⚠️ No email/SMS sending (UI only)
 - ⚠️ Export functions generate placeholder files
 - ⚠️ No barcode/QR scanning
@@ -591,8 +596,6 @@ Info: #3B82F6
 ## 🔮 Future Roadmap
 
 ### **Phase 2 - Enhanced Features**
-- 💾 Backend API integration (Node.js/Express)
-- 🗄️ Database persistence (PostgreSQL/MongoDB)
 - 📧 Email notification service
 - 📱 SMS notification service
 - 🖨️ Barcode/QR code scanning
@@ -600,7 +603,6 @@ Info: #3B82F6
 - 📅 Calendar integration for due dates
 
 ### **Phase 3 - Advanced Features**
-- 🖥️ Computer booking system
 - 📱 Mobile app (React Native)
 - 🤖 AI book recommendations
 - 🌐 Multi-language support
