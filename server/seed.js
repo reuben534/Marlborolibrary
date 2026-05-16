@@ -106,6 +106,12 @@ const seedData = async () => {
     // Seed Members
     const members = [
       {
+        name: 'Jane Member',
+        phone: '+44 20 7946 0000',
+        email: 'member@library.com',
+        status: 'active',
+      },
+      {
         name: 'John Smith',
         phone: '+44 20 7946 1001',
         email: 'john.smith@email.com',

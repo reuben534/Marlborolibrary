@@ -91,8 +91,13 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       method: 'PUT',
       body: JSON.stringify(data),
     });
-    
-    setUser(updatedUser);
+
+    if (updatedUser.token) {
+      localStorage.setItem('token', updatedUser.token);
+    }
+
+    const { token: _token, ...userWithoutToken } = updatedUser;
+    setUser(userWithoutToken);
   };
 
   const contextValue = useMemo(

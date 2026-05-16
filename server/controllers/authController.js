@@ -1,5 +1,7 @@
 import jwt from 'jsonwebtoken';
 import User from '../models/User.js';
+import Member from '../models/Member.js';
+import { createAuditLog } from './auditController.js';
 
 // Generate JWT
 const generateToken = (id) => {
@@ -12,7 +14,7 @@ const generateToken = (id) => {
 // @route   POST /api/auth/register
 // @access  Public
 export const registerUser = async (req, res) => {
-  const { fullName, username, email, password, role, photo } = req.body;
+  const { fullName, username, email, password, role, photo, phone } = req.body;
 
   try {
     const userExists = await User.findOne({ $or: [{ email }, { username }] });
@@ -21,16 +23,35 @@ export const registerUser = async (req, res) => {
       return res.status(400).json({ message: 'User already exists' });
     }
 
+    const userRole = role || 'member';
+
     const user = await User.create({
       fullName,
       username,
       email,
       password,
-      role: role || 'member',
+      role: userRole,
       photo,
+      phone: phone || '',
     });
 
     if (user) {
+      // If the registered user is a member, also create a Member record
+      if (userRole === 'member') {
+        try {
+          await Member.create({
+            name: fullName,
+            email: email,
+            phone: phone || 'Not provided',
+            status: 'active',
+          });
+        } catch (memberError) {
+          console.error('Error creating member profile:', memberError);
+          // We don't fail the registration if member creation fails, 
+          // but we log it. Ideally this should be a transaction.
+        }
+      }
+
       res.status(201).json({
         _id: user._id,
         fullName: user.fullName,
@@ -62,6 +83,16 @@ export const loginUser = async (req, res) => {
       if (role && user.role !== role) {
         return res.status(401).json({ message: 'Invalid role for this user' });
       }
+
+      // Log successful login
+      await createAuditLog(
+        user._id,
+        user.fullName,
+        user.role,
+        'LOGIN',
+        null,
+        `User ${user.fullName} (${user.role}) logged in`
+      );
 
       res.json({
         _id: user._id,
@@ -112,7 +143,9 @@ export const updateUserProfile = async (req, res) => {
     user.fullName = req.body.fullName || user.fullName;
     user.email = req.body.email || user.email;
     user.phone = req.body.phone || user.phone;
-    user.photo = req.body.photo || user.photo;
+    if (req.body.photo !== undefined) {
+      user.photo = req.body.photo;
+    }
     
     if (req.body.password) {
       user.password = req.body.password;

@@ -4,7 +4,7 @@ interface ViewMemberModalProps {
   open: boolean;
   onOpenChange: (open: boolean) => void;
   member: {
-    id: string;
+    _id: string;
     name: string;
     phone: string;
     email: string;
@@ -27,7 +27,7 @@ export function ViewMemberModal({ open, onOpenChange, member }: ViewMemberModalP
       {/* Modal */}
       <div className="fixed inset-0 z-50 overflow-y-auto">
         <div className="min-h-screen px-4 flex items-center justify-center">
-          <div className="bg-white rounded-2xl shadow-2xl w-full max-w-2xl animate-scale-in transform -translate-x-1/2 -translate-y-1/2 fixed top-1/2 left-1/2">
+          <div className="bg-white rounded-2xl shadow-2xl w-full max-w-2xl animate-scale-in">
             {/* Header */}
             <div className="flex items-center justify-between p-6 border-b border-gray-200">
               <div className="flex items-center gap-3">
@@ -96,34 +96,18 @@ export function ViewMemberModal({ open, onOpenChange, member }: ViewMemberModalP
                   </div>
                   <div className="flex-1">
                     <p className="text-xs text-gray-500 mb-1">Member Since</p>
-                    <p className="text-sm font-medium text-gray-900">{member.memberSince}</p>
-                  </div>
-                </div>
-
-                <div className="flex items-start gap-3 p-4 bg-gray-50 rounded-lg">
-                  <div className="bg-white rounded-lg p-2">
-                    <MapPin className="size-5 text-[#1B5E4B]" />
-                  </div>
-                  <div className="flex-1">
-                    <p className="text-xs text-gray-500 mb-1">Address</p>
                     <p className="text-sm font-medium text-gray-900">
-                      123 Library Street, London, SW1A 1AA
+                      {new Date(member.memberSince).toLocaleDateString('en-GB', {
+                        day: 'numeric',
+                        month: 'long',
+                        year: 'numeric'
+                      })}
                     </p>
-                  </div>
-                </div>
-
-                <div className="flex items-start gap-3 p-4 bg-gray-50 rounded-lg">
-                  <div className="bg-white rounded-lg p-2">
-                    <AlertCircle className="size-5 text-[#1B5E4B]" />
-                  </div>
-                  <div className="flex-1">
-                    <p className="text-xs text-gray-500 mb-1">Emergency Contact</p>
-                    <p className="text-sm font-medium text-gray-900">+44 20 7946 0958</p>
                   </div>
                 </div>
               </div>
 
-              {/* Statistics */}
+              {/* Statistics placeholder - In a real app, these would come from the backend */}
               <div className="grid grid-cols-3 gap-4 mt-6 pt-6 border-t border-gray-200">
                 <div className="text-center">
                   <p className="text-2xl font-bold text-[#1B5E4B]">12</p>
@@ -134,7 +118,7 @@ export function ViewMemberModal({ open, onOpenChange, member }: ViewMemberModalP
                   <p className="text-xs text-gray-600 mt-1">Currently Active</p>
                 </div>
                 <div className="text-center">
-                  <p className="text-2xl font-bold text-green-600">£0.00</p>
+                  <p className="text-2xl font-bold text-green-600">R0.00</p>
                   <p className="text-xs text-gray-600 mt-1">Outstanding Fines</p>
                 </div>
               </div>

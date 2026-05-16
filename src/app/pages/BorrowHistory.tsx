@@ -37,11 +37,13 @@ export function BorrowHistory() {
     fetchHistory();
   }, []);
 
-  const filteredHistory = history.filter(
-    (item) =>
-      item.book.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      item.member.name.toLowerCase().includes(searchQuery.toLowerCase())
-  );
+  const filteredHistory = history
+    .filter((item) => item.book && item.member)
+    .filter(
+      (item) =>
+        (item.book?.title || '').toLowerCase().includes(searchQuery.toLowerCase()) ||
+        (item.member?.name || '').toLowerCase().includes(searchQuery.toLowerCase())
+    );
 
   const getStatusBadge = (item: BorrowHistory) => {
     if (item.status === 'active') {
@@ -132,14 +134,14 @@ export function BorrowHistory() {
                         <BookOpen className="size-5" />
                       </div>
                       <span className="text-sm font-medium text-gray-900">
-                        {item.book.title}
+                        {item.book?.title || 'Unknown Book'}
                       </span>
                     </div>
                   </td>
                   <td className="px-6 py-4">
                     <div className="flex items-center gap-2">
                       <User className="size-4 text-gray-400" />
-                      <span className="text-sm text-gray-600">{item.member.name}</span>
+                      <span className="text-sm text-gray-600">{item.member?.name || 'Unknown Member'}</span>
                     </div>
                   </td>
                   <td className="px-6 py-4">
@@ -158,7 +160,7 @@ export function BorrowHistory() {
                   </td>
                   <td className="px-6 py-4">{getStatusBadge(item)}</td>
                   <td className="px-6 py-4 text-sm font-semibold text-gray-900">
-                    {item.fine ? `£${item.fine.toFixed(2)}` : '-'}
+                    {item.fine ? `R${item.fine.toFixed(2)}` : '-'}
                   </td>
                 </tr>
               ))}
@@ -179,10 +181,10 @@ export function BorrowHistory() {
                 <BookOpen className="size-6" />
               </div>
               <div className="flex-1 min-w-0">
-                <h3 className="font-semibold text-gray-900 mb-1">{item.book.title}</h3>
+                <h3 className="font-semibold text-gray-900 mb-1">{item.book?.title || 'Unknown Book'}</h3>
                 <p className="text-sm text-gray-600 flex items-center gap-1">
                   <User className="size-3" />
-                  {item.member.name}
+                  {item.member?.name || 'Unknown Member'}
                 </p>
               </div>
             </div>
@@ -211,7 +213,7 @@ export function BorrowHistory() {
               {item.fine && (
                 <div className="flex justify-between">
                   <span className="text-gray-600">Fine:</span>
-                  <span className="text-red-600 font-semibold">£{item.fine.toFixed(2)}</span>
+                  <span className="text-red-600 font-semibold">R{item.fine.toFixed(2)}</span>
                 </div>
               )}
             </div>

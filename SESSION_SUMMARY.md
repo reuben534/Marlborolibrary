@@ -65,7 +65,7 @@ npm run seed
 ### 2. Live Walkthrough
 - Login as **admin** to manage computers and members.
 - Login as **member** to browse the catalogue and book a computer.
-- Verify that overdue returns correctly calculate the £1.00/day fine.
+- Verify that overdue returns correctly calculate the R1.00/day fine.
 
 ---
 

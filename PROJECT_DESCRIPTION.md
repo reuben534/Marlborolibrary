@@ -48,7 +48,7 @@ The application supports **three distinct user roles** with specific permissions
 ### 📥 **Return Operations**
 - Process book returns
 - Automatic overdue calculation
-- Fine calculation (£1.00 per day overdue)
+- Fine calculation (R1.00 per day overdue)
 - Book condition assessment
 - Fine management
 
@@ -333,8 +333,8 @@ Role: Member
 7. Confirm return
 
 **Fine Calculation:**
-- Formula: Overdue Days × £1.00 per day
-- Example: 5 days late = £5.00 fine
+- Formula: Overdue Days × R1.00 per day
+- Example: 5 days late = R5.00 fine
 - Displayed clearly in confirmation modal
 
 ---
@@ -372,7 +372,7 @@ Role: Member
 
 **Borrowing Rules:**
 - Borrow period (default: 14 days)
-- Fine per day (default: £1.00)
+- Fine per day (default: R1.00)
 - Max books per member (default: 5)
 
 **Notifications:**

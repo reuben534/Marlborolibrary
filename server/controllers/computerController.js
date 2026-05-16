@@ -1,5 +1,6 @@
 import Computer from '../models/Computer.js';
 import ComputerBooking from '../models/ComputerBooking.js';
+import Member from '../models/Member.js';
 import { asyncHandler } from '../middleware/asyncHandler.js';
 
 // --- Computer Management ---
@@ -93,9 +94,24 @@ export const getBookings = asyncHandler(async (req, res) => {
 export const createBooking = asyncHandler(async (req, res) => {
   const { computerId, memberId, date, timeSlot, duration, purpose } = req.body;
 
-  if (!computerId || !memberId || !date || !timeSlot) {
+  if (!computerId || !date || !timeSlot) {
     res.status(400);
-    throw new Error('Please provide computer, member, date, and time slot');
+    throw new Error('Please provide computer, date, and time slot');
+  }
+
+  let finalMemberId = memberId;
+
+  // If user is a member, find their member record automatically
+  if (req.user.role === 'member') {
+    const member = await Member.findOne({ email: req.user.email });
+    if (!member) {
+      res.status(404);
+      throw new Error('Member profile not found. Please contact the librarian.');
+    }
+    finalMemberId = member._id;
+  } else if (!finalMemberId) {
+    res.status(400);
+    throw new Error('Please provide a member ID');
   }
 
   // Check if computer is available
@@ -110,7 +126,7 @@ export const createBooking = asyncHandler(async (req, res) => {
     throw new Error('Computer is currently under maintenance');
   }
 
-  // Check for existing booking at the same time (simplified)
+  // Check for existing booking at the same time
   const existingBooking = await ComputerBooking.findOne({
     computer: computerId,
     date,
@@ -125,15 +141,12 @@ export const createBooking = asyncHandler(async (req, res) => {
 
   const booking = await ComputerBooking.create({
     computer: computerId,
-    member: memberId,
+    member: finalMemberId,
     date,
     timeSlot,
     duration: duration || 1,
     purpose,
   });
-
-  // Update computer status if booking is for today (optional logic)
-  // For now, let's just create the booking
 
   res.status(201).json(booking);
 });

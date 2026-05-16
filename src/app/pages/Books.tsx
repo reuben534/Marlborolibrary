@@ -92,7 +92,21 @@ export function Books() {
     }
   };
 
+  const handleBorrowRequest = async (book: Book) => {
+    try {
+      await apiClient('/transactions/request', {
+        method: 'POST',
+        body: JSON.stringify({ bookId: book._id }),
+      });
+      toast.success(`Request to borrow "${book.title}" sent successfully! Wait for approval.`);
+      fetchBooks(); // Refresh to show updated availability if needed
+    } catch (error: any) {
+      toast.error(error.message || 'Failed to send borrow request');
+    }
+  };
+
   const canManage = user?.role === 'admin' || user?.role === 'librarian';
+  const isMember = user?.role === 'member';
 
   const getStatusBadge = (status: Book['status']) => {
     const styles = {
@@ -171,7 +185,7 @@ export function Books() {
                 <th className="text-left px-6 py-4 text-sm font-semibold text-gray-700">
                   Status
                 </th>
-                {canManage && (
+                {(canManage || isMember) && (
                   <th className="text-left px-6 py-4 text-sm font-semibold text-gray-700">
                     Actions
                   </th>
@@ -195,20 +209,34 @@ export function Books() {
                     <span className="font-semibold">{book.available}</span> / {book.copies}
                   </td>
                   <td className="px-6 py-4">{getStatusBadge(book.status)}</td>
-                  {canManage && (
+                  {(canManage || isMember) && (
                     <td className="px-6 py-4">
                       <div className="flex items-center gap-2">
-                        <button 
-                          onClick={() => setBookModal({ open: true, book })}
-                          className="p-2 text-green-600 hover:bg-green-50 rounded-lg transition-colors">
-                          <Edit className="size-4" />
-                        </button>
-                        <button
-                          onClick={() => setDeleteModal({ open: true, book })}
-                          className="p-2 text-red-600 hover:bg-red-50 rounded-lg transition-colors"
-                        >
-                          <Trash2 className="size-4" />
-                        </button>
+                        {isMember && (
+                          <button
+                            onClick={() => handleBorrowRequest(book)}
+                            disabled={book.available <= 0}
+                            className="flex items-center gap-1 px-3 py-1.5 bg-[#1B5E4B] text-white rounded-md text-xs font-medium hover:bg-[#15523f] transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+                          >
+                            <BookOpen className="size-3" />
+                            Borrow
+                          </button>
+                        )}
+                        {canManage && (
+                          <>
+                            <button 
+                              onClick={() => setBookModal({ open: true, book })}
+                              className="p-2 text-green-600 hover:bg-green-50 rounded-lg transition-colors">
+                              <Edit className="size-4" />
+                            </button>
+                            <button
+                              onClick={() => setDeleteModal({ open: true, book })}
+                              className="p-2 text-red-600 hover:bg-red-50 rounded-lg transition-colors"
+                            >
+                              <Trash2 className="size-4" />
+                            </button>
+                          </>
+                        )}
                       </div>
                     </td>
                   )}
@@ -247,20 +275,34 @@ export function Books() {
               </p>
             </div>
 
-            {canManage && (
+            {(canManage || isMember) && (
               <div className="flex gap-2 pt-3 border-t border-gray-100">
-                <button 
-                  onClick={() => setBookModal({ open: true, book })}
-                  className="flex-1 flex items-center justify-center gap-2 px-4 py-2 text-green-600 bg-green-50 rounded-lg font-medium hover:bg-green-100 transition-colors">
-                  <Edit className="size-4" />
-                  Edit
-                </button>
-                <button
-                  onClick={() => setDeleteModal({ open: true, book })}
-                  className="flex items-center justify-center px-4 py-2 text-red-600 bg-red-50 rounded-lg hover:bg-red-100 transition-colors"
-                >
-                  <Trash2 className="size-4" />
-                </button>
+                {isMember && (
+                  <button
+                    onClick={() => handleBorrowRequest(book)}
+                    disabled={book.available <= 0}
+                    className="flex-1 flex items-center justify-center gap-2 px-4 py-2 bg-[#1B5E4B] text-white rounded-lg font-medium hover:bg-[#15523f] transition-colors disabled:opacity-50"
+                  >
+                    <BookOpen className="size-4" />
+                    Borrow
+                  </button>
+                )}
+                {canManage && (
+                  <>
+                    <button 
+                      onClick={() => setBookModal({ open: true, book })}
+                      className="flex-1 flex items-center justify-center gap-2 px-4 py-2 text-green-600 bg-green-50 rounded-lg font-medium hover:bg-green-100 transition-colors">
+                      <Edit className="size-4" />
+                      Edit
+                    </button>
+                    <button
+                      onClick={() => setDeleteModal({ open: true, book })}
+                      className="flex items-center justify-center px-4 py-2 text-red-600 bg-red-50 rounded-lg hover:bg-red-100 transition-colors"
+                    >
+                      <Trash2 className="size-4" />
+                    </button>
+                  </>
+                )}
               </div>
             )}
           </div>

@@ -3,6 +3,12 @@ import mongoose from 'mongoose';
 import dotenv from 'dotenv';
 import cors from 'cors';
 import morgan from 'morgan';
+import path from 'path';
+import { fileURLToPath } from 'url';
+
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
+const imagesDir = path.join(__dirname, '../images');
 import authRoutes from './routes/authRoutes.js';
 import memberRoutes from './routes/memberRoutes.js';
 import bookRoutes from './routes/bookRoutes.js';
@@ -10,6 +16,8 @@ import transactionRoutes from './routes/transactionRoutes.js';
 import dashboardRoutes from './routes/dashboardRoutes.js';
 import uploadRoutes from './routes/uploadRoutes.js';
 import computerRoutes from './routes/computerRoutes.js';
+import reportRoutes from './routes/reportRoutes.js';
+import auditRoutes from './routes/auditRoutes.js';
 import { notFound, errorHandler } from './middleware/errorMiddleware.js';
 
 // Load environment variables
@@ -24,7 +32,7 @@ app.use(express.json());
 app.use(morgan('dev'));
 
 // Serve static images
-app.use('/images', express.static('../images'));
+app.use('/images', express.static(imagesDir));
 
 // Routes
 app.use('/api/auth', authRoutes);
@@ -34,6 +42,8 @@ app.use('/api/transactions', transactionRoutes);
 app.use('/api/dashboard', dashboardRoutes);
 app.use('/api/upload', uploadRoutes);
 app.use('/api/computers', computerRoutes);
+app.use('/api/reports', reportRoutes);
+app.use('/api/audit', auditRoutes);
 
 // Error Handling Middleware
 app.use(notFound);

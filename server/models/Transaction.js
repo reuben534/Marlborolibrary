@@ -25,7 +25,7 @@ const transactionSchema = new mongoose.Schema(
     },
     status: {
       type: String,
-      enum: ['active', 'returned', 'overdue'],
+      enum: ['pending', 'active', 'returned', 'overdue', 'rejected'],
       default: 'active',
     },
     fine: {

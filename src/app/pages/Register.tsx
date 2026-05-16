@@ -2,7 +2,7 @@ import { useState } from 'react';
 import { useNavigate, Link } from 'react-router';
 import { useAuth, UserRole } from '../context/AuthContext';
 import { BookOpen, Upload } from 'lucide-react';
-import { apiClient } from '../api/client';
+import { uploadPhoto } from '../api/client';
 import { toast } from 'sonner';
 
 export function Register() {
@@ -23,22 +23,8 @@ export function Register() {
     const file = e.target.files?.[0];
     if (!file) return;
 
-    const uploadData = new FormData();
-    uploadData.append('photo', file);
-
     try {
-      const result = await apiClient('/upload', {
-        method: 'POST',
-        body: uploadData as any,
-        headers: {
-          // fetch will set the correct content-type with boundary when body is FormData
-          // but our apiClient sets application/json by default.
-          // We need to override it.
-          'Content-Type': '', 
-        }
-      });
-      // Filter out the empty Content-Type in apiClient or handle it there.
-      // Actually, let's look at apiClient again.
+      const result = await uploadPhoto(file);
       setFormData((prev) => ({ ...prev, photo: result.url }));
       toast.success('Photo uploaded successfully');
     } catch (err) {

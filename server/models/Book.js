@@ -45,8 +45,8 @@ const bookSchema = new mongoose.Schema(
   }
 );
 
-// Middleware to update status based on availability
-bookSchema.pre('save', function (next) {
+// Middleware to update status based on availability (Mongoose 9: no next callback)
+bookSchema.pre('save', function () {
   if (this.available === 0) {
     this.status = 'unavailable';
   } else if (this.available < 2) {
@@ -54,7 +54,6 @@ bookSchema.pre('save', function (next) {
   } else {
     this.status = 'available';
   }
-  next();
 });
 
 const Book = mongoose.model('Book', bookSchema);

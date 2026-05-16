@@ -43,6 +43,7 @@ export function ComputerBooking() {
   
   const [computers, setComputers] = useState<Computer[]>([]);
   const [bookings, setBookings] = useState<Booking[]>([]);
+  const [members, setMembers] = useState<{ _id: string, name: string }[]>([]);
 
   const [bookingModal, setBookingModal] = useState<{ open: boolean; computer: Computer | null }>({
     open: false,
@@ -63,12 +64,24 @@ export function ComputerBooking() {
 
   const fetchData = async () => {
     try {
-      const [computersData, bookingsData] = await Promise.all([
+      const promises: Promise<any>[] = [
         apiClient('/computers'),
         apiClient('/computers/bookings'),
-      ]);
-      setComputers(computersData);
-      setBookings(bookingsData);
+      ];
+
+      // Only fetch members if staff
+      if (user?.role === 'admin' || user?.role === 'librarian') {
+        promises.push(apiClient('/members'));
+      }
+
+      const results = await Promise.all(promises);
+      
+      setComputers(results[0]);
+      setBookings(results[1]);
+      
+      if (results[2]) {
+        setMembers(results[2]);
+      }
     } catch (error) {
       console.error('Error fetching data:', error);
       toast.error('Failed to load computer data');
@@ -259,6 +272,7 @@ export function ComputerBooking() {
         onOpenChange={(open) => setBookingModal({ open, computer: null })}
         computer={bookingModal.computer}
         onSave={handleSaveBooking}
+        members={members}
       />
 
       <ComputerManagementModal

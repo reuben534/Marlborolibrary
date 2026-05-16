@@ -17,16 +17,16 @@ interface BookComputerModalProps {
   onOpenChange: (open: boolean) => void;
   computer: Computer | null;
   onSave: (data: any) => Promise<void>;
+  members?: { _id: string, name: string }[];
 }
 
-export function BookComputerModal({ open, onOpenChange, computer, onSave }: BookComputerModalProps) {
+export function BookComputerModal({ open, onOpenChange, computer, onSave, members = [] }: BookComputerModalProps) {
   const { user } = useAuth();
   const [date, setDate] = useState('');
   const [timeSlot, setTimeSlot] = useState('');
   const [duration, setDuration] = useState(1);
   const [purpose, setPurpose] = useState('');
   const [isSubmitting, setIsSubmitting] = useState(false);
-  const [members, setMembers] = useState<{ _id: string, name: string }[]>([]);
   const [selectedMember, setSelectedMember] = useState('');
 
   useEffect(() => {
@@ -36,19 +36,7 @@ export function BookComputerModal({ open, onOpenChange, computer, onSave }: Book
       setTimeSlot('');
       setDuration(1);
       setPurpose('');
-      setSelectedMember(user?.role === 'member' ? user._id : '');
-      
-      if (user?.role !== 'member') {
-        const fetchMembers = async () => {
-          try {
-            const data = await apiClient('/members');
-            setMembers(data);
-          } catch (error) {
-            console.error('Failed to fetch members');
-          }
-        };
-        fetchMembers();
-      }
+      setSelectedMember(user?.role === 'member' ? 'self' : '');
     }
   }, [open, user]);
 
@@ -63,7 +51,7 @@ export function BookComputerModal({ open, onOpenChange, computer, onSave }: Book
     try {
       await onSave({
         computerId: computer._id,
-        memberId: selectedMember,
+        memberId: selectedMember === 'self' ? undefined : selectedMember,
         date,
         timeSlot,
         duration,
@@ -150,6 +138,7 @@ export function BookComputerModal({ open, onOpenChange, computer, onSave }: Book
                     value={selectedMember}
                     onChange={(e) => setSelectedMember(e.target.value)}
                     required
+                    disabled={isSubmitting}
                     className="w-full px-4 py-2.5 rounded-lg border border-gray-300 focus:outline-none focus:ring-2 focus:ring-[#1B5E4B]"
                   >
                     <option value="">Choose a member</option>

@@ -223,7 +223,7 @@ The `dist/` folder contains the production build and can be deployed to:
 - ✅ Member CRUD operations
 - ✅ Book catalogue management
 - ✅ Borrowing & return workflows
-- ✅ Automated fine calculation (£1/day overdue)
+- ✅ Automated fine calculation (R1/day overdue)
 - ✅ Real-time availability tracking
 - ✅ Transaction history with search/filter
 - ✅ Dashboard analytics

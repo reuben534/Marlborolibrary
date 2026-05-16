@@ -37,3 +37,12 @@ export const apiClient = async (endpoint: string, options: RequestInit = {}) => 
 
   return data;
 };
+
+export async function uploadPhoto(file: File): Promise<{ url: string }> {
+  const formData = new FormData();
+  formData.append('photo', file);
+  return apiClient('/upload', {
+    method: 'POST',
+    body: formData,
+  });
+}

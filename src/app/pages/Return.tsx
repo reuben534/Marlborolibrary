@@ -1,17 +1,17 @@
-import { useState, useEffect } from 'react';
-import { Calendar, BookDown, DollarSign, Calculator } from 'lucide-react';
-import { ConfirmModal } from '../components/ConfirmModal';
-import { toast } from 'sonner';
-import { apiClient } from '../api/client';
+import { useState, useEffect } from "react";
+import { Calendar, BookDown, DollarSign, Calculator } from "lucide-react";
+import { ConfirmModal } from "../components/ConfirmModal";
+import { toast } from "sonner";
+import { apiClient } from "../api/client";
 
 export function Return() {
   const [formData, setFormData] = useState({
-    transactionId: '',
-    member: '',
-    book: '',
-    borrowDate: '',
-    dueDate: '',
-    returnDate: new Date().toISOString().split('T')[0],
+    transactionId: "",
+    member: "",
+    book: "",
+    borrowDate: "",
+    dueDate: "",
+    returnDate: new Date().toISOString().split("T")[0],
   });
   const [lateFee, setLateFee] = useState(0);
   const [confirmModal, setConfirmModal] = useState(false);
@@ -21,11 +21,15 @@ export function Return() {
   useEffect(() => {
     const fetchActiveBorrows = async () => {
       try {
-        const transactions = await apiClient('/transactions');
-        setActiveBorrows(transactions.filter((t: any) => t.status === 'active' || t.status === 'overdue'));
+        const transactions = await apiClient("/transactions");
+        setActiveBorrows(
+          transactions.filter(
+            (t: any) => t.status === "active" || t.status === "overdue",
+          ),
+        );
       } catch (error) {
-        console.error('Error fetching active borrows:', error);
-        toast.error('Failed to load active loans');
+        console.error("Error fetching active borrows:", error);
+        toast.error("Failed to load active loans");
       } finally {
         setLoading(false);
       }
@@ -36,7 +40,7 @@ export function Return() {
 
   const calculateFine = () => {
     if (!formData.dueDate || !formData.returnDate) {
-      toast.error('Select a loan to calculate fine');
+      toast.error("Select a loan to calculate fine");
       return;
     }
 
@@ -45,14 +49,14 @@ export function Return() {
 
     if (returnD > dueDate) {
       const daysLate = Math.ceil(
-        (returnD.getTime() - dueDate.getTime()) / (1000 * 60 * 60 * 24)
+        (returnD.getTime() - dueDate.getTime()) / (1000 * 60 * 60 * 24),
       );
-      const fee = daysLate * 1; // £1 per day as per backend
+      const fee = daysLate * 1; // R1 per day as per backend
       setLateFee(fee);
-      toast.info(`${daysLate} days overdue. Fine: £${fee.toFixed(2)}`);
+      toast.info(`${daysLate} days overdue. Fine: R${fee.toFixed(2)}`);
     } else {
       setLateFee(0);
-      toast.success('Returned on time. No fine!');
+      toast.success("Returned on time. No fine!");
     }
   };
 
@@ -65,34 +69,42 @@ export function Return() {
   const handleConfirm = async () => {
     try {
       await apiClient(`/transactions/return/${formData.transactionId}`, {
-        method: 'POST',
+        method: "POST",
         body: JSON.stringify({
-          condition: 'Good',
-          notes: '',
+          condition: "Good",
+          notes: "",
         }),
       });
 
-      toast.success(`Return confirmed! "${formData.book}" returned successfully.`);
+      toast.success(
+        `Return confirmed! "${formData.book}" returned successfully.`,
+      );
       setFormData({
-        transactionId: '',
-        member: '',
-        book: '',
-        borrowDate: '',
-        dueDate: '',
-        returnDate: new Date().toISOString().split('T')[0],
+        transactionId: "",
+        member: "",
+        book: "",
+        borrowDate: "",
+        dueDate: "",
+        returnDate: new Date().toISOString().split("T")[0],
       });
       setLateFee(0);
-      
+
       // Refresh active borrows
-      const transactions = await apiClient('/transactions');
-      setActiveBorrows(transactions.filter((t: any) => t.status === 'active' || t.status === 'overdue'));
+      const transactions = await apiClient("/transactions");
+      setActiveBorrows(
+        transactions.filter(
+          (t: any) => t.status === "active" || t.status === "overdue",
+        ),
+      );
     } catch (error: any) {
-      toast.error(error.message || 'Failed to process return');
+      toast.error(error.message || "Failed to process return");
     }
   };
 
   if (loading) {
-    return <div className="flex items-center justify-center h-64">Loading...</div>;
+    return (
+      <div className="flex items-center justify-center h-64">Loading...</div>
+    );
   }
 
   return (
@@ -126,15 +138,21 @@ export function Return() {
               <select
                 value={formData.transactionId}
                 onChange={(e) => {
-                  const borrow = activeBorrows.find((b) => b._id === e.target.value);
-                  if (borrow) {
+                  const borrow = activeBorrows.find(
+                    (b) => b._id === e.target.value,
+                  );
+                  if (borrow && borrow.member && borrow.book) {
                     setFormData({
                       ...formData,
                       transactionId: borrow._id,
-                      member: borrow.member.name,
-                      book: borrow.book.title,
-                      borrowDate: new Date(borrow.borrowDate).toISOString().split('T')[0],
-                      dueDate: new Date(borrow.dueDate).toISOString().split('T')[0],
+                      member: borrow.member.name || "Unknown Member",
+                      book: borrow.book.title || "Unknown Book",
+                      borrowDate: new Date(borrow.borrowDate)
+                        .toISOString()
+                        .split("T")[0],
+                      dueDate: new Date(borrow.dueDate)
+                        .toISOString()
+                        .split("T")[0],
                     });
                   }
                 }}
@@ -142,11 +160,15 @@ export function Return() {
                 required
               >
                 <option value="">Choose an active loan</option>
-                {activeBorrows.map((borrow) => (
-                  <option key={borrow._id} value={borrow._id}>
-                    {borrow.member.name} - {borrow.book.title} (Due: {new Date(borrow.dueDate).toLocaleDateString('en-GB')})
-                  </option>
-                ))}
+                {activeBorrows
+                  .filter((borrow) => borrow.member && borrow.book)
+                  .map((borrow) => (
+                    <option key={borrow._id} value={borrow._id}>
+                      {borrow.member?.name || "Unknown Member"} -{" "}
+                      {borrow.book?.title || "Unknown Book"} (Due:{" "}
+                      {new Date(borrow.dueDate).toLocaleDateString("en-GB")})
+                    </option>
+                  ))}
               </select>
             </div>
 
@@ -203,13 +225,13 @@ export function Return() {
                 <div>
                   <p className="text-xs text-gray-600">Fine Amount</p>
                   <p className="text-lg font-bold text-gray-900">
-                    £{lateFee.toFixed(2)}
+                    R{lateFee.toFixed(2)}
                   </p>
                 </div>
               </div>
             </div>
             <p className="text-sm text-gray-600 mt-3">
-              Late fee: £1.00 per day overdue
+              Late fee: R1.00 per day overdue
             </p>
           </div>
 
@@ -226,12 +248,12 @@ export function Return() {
               type="button"
               onClick={() => {
                 setFormData({
-                  transactionId: '',
-                  member: '',
-                  book: '',
-                  borrowDate: '',
-                  dueDate: '',
-                  returnDate: new Date().toISOString().split('T')[0],
+                  transactionId: "",
+                  member: "",
+                  book: "",
+                  borrowDate: "",
+                  dueDate: "",
+                  returnDate: new Date().toISOString().split("T")[0],
                 });
                 setLateFee(0);
               }}
@@ -250,13 +272,13 @@ export function Return() {
         title="Confirm Return"
         description={`Are you sure you want to register this return?${
           lateFee > 0
-            ? ` The member will need to pay a fine of £${lateFee.toFixed(2)}.`
-            : ''
+            ? ` The member will need to pay a fine of R${lateFee.toFixed(2)}.`
+            : ""
         }`}
         confirmText="Yes, Confirm"
         cancelText="Cancel"
         onConfirm={handleConfirm}
-        variant={lateFee > 0 ? 'warning' : 'info'}
+        variant={lateFee > 0 ? "warning" : "info"}
       />
     </div>
   );

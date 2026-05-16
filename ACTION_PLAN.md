@@ -142,7 +142,7 @@ curl http://localhost:5000/api/dashboard/stats \
   
 - [ ] Return Operations
   - Process return
-  - Verify fine calculation (£1/day overdue)
+  - Verify fine calculation (R1/day overdue)
   - Check availability update
   
 - [ ] History & Reports

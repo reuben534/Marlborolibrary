@@ -16,6 +16,7 @@ import {
   History,
   FileText,
   Monitor,
+  Activity,
 } from 'lucide-react';
 
 interface LayoutProps {
@@ -42,6 +43,7 @@ export function Layout({ children }: LayoutProps) {
     { icon: Monitor, label: 'Computers', path: '/computer-booking', roles: ['admin', 'librarian'] },
     { icon: History, label: 'History', path: '/history', roles: ['admin', 'librarian'] },
     { icon: FileText, label: 'Reports', path: '/reports', roles: ['admin', 'librarian'] },
+    { icon: Activity, label: 'Audit Trail', path: '/audit-trail', roles: ['admin'] },
     { icon: UserCog, label: 'Profile', path: '/profile', roles: ['admin', 'librarian', 'member'] },
     { icon: Settings, label: 'Settings', path: '/settings', roles: ['admin'] },
   ];

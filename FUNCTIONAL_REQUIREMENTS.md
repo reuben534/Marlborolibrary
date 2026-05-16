@@ -537,7 +537,7 @@ The application supports three distinct user roles (Administrator, Librarian, an
   - Fine calculation (if overdue)
   - Notes (optional)
 - Automatic overdue calculation
-- Fine calculation: £1.00 per day overdue
+- Fine calculation: R1.00 per day overdue
 - Confirmation modal with fine details
 - Success notification
 - Update book availability
@@ -561,7 +561,7 @@ The application supports three distinct user roles (Administrator, Librarian, an
 **Requirements:**
 - Compare return date with due date
 - Calculate overdue days
-- Apply fine rate: £1.00 per day
+- Apply fine rate: R1.00 per day
 - Display fine amount clearly
 - Option to waive fines (admin only)
 - Record fine in member account
@@ -807,7 +807,7 @@ The application supports three distinct user roles (Administrator, Librarian, an
 **Requirements:**
 - Settings:
   - Borrow period (days)
-  - Fine per day (£)
+  - Fine per day (R)
   - Maximum books per member
 - Number input validation
 - Minimum value constraints

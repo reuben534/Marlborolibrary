@@ -13,6 +13,7 @@ import { BorrowHistory } from './pages/BorrowHistory';
 import { Reports } from './pages/Reports';
 import { Settings } from './pages/Settings';
 import { ComputerBooking } from './pages/ComputerBooking';
+import { AuditTrail } from './pages/AuditTrail';
 import { Layout } from './components/Layout';
 import { useAuth } from './context/AuthContext';
 
@@ -161,6 +162,14 @@ export const router = createBrowserRouter([
       <LibrarianOrAdminRoute>
         <ComputerBooking />
       </LibrarianOrAdminRoute>
+    ),
+  },
+  {
+    path: '/audit-trail',
+    element: (
+      <AdminRoute>
+        <AuditTrail />
+      </AdminRoute>
     ),
   },
   {

@@ -9,6 +9,7 @@ interface MemberModalProps {
     name: string;
     phone: string;
     email: string;
+    status?: 'active' | 'inactive';
   } | null;
   onSave: (data: any) => Promise<void>;
 }
@@ -18,6 +19,7 @@ export function MemberModal({ open, onOpenChange, member, onSave }: MemberModalP
     name: '',
     phone: '',
     email: '',
+    status: 'active' as 'active' | 'inactive',
   });
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [errors, setErrors] = useState<Record<string, string>>({});
@@ -28,6 +30,7 @@ export function MemberModal({ open, onOpenChange, member, onSave }: MemberModalP
         name: member.name || '',
         phone: member.phone || '',
         email: member.email || '',
+        status: member.status || 'active',
       });
       setErrors({});
     } else if (open) {
@@ -35,6 +38,7 @@ export function MemberModal({ open, onOpenChange, member, onSave }: MemberModalP
         name: '',
         phone: '',
         email: '',
+        status: 'active',
       });
       setErrors({});
     }
@@ -155,6 +159,21 @@ export function MemberModal({ open, onOpenChange, member, onSave }: MemberModalP
                     disabled={isSubmitting}
                   />
                   {errors.email && <p className="text-red-500 text-xs mt-1">{errors.email}</p>}
+                </div>
+
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-2">
+                    Status
+                  </label>
+                  <select
+                    value={formData.status}
+                    onChange={(e) => setFormData({ ...formData, status: e.target.value as 'active' | 'inactive' })}
+                    className="w-full px-4 py-2.5 rounded-lg border border-gray-300 focus:outline-none focus:ring-2 focus:ring-[#1B5E4B] focus:border-transparent"
+                    disabled={isSubmitting}
+                  >
+                    <option value="active">Active</option>
+                    <option value="inactive">Inactive</option>
+                  </select>
                 </div>
               </div>
 
