@@ -920,39 +920,36 @@ The application supports three distinct user roles (Administrator, Librarian, an
 
 **Routing:**
 - React Router Browser Router
-- Protected routes with authentication
+- Protected routes with authentication (`guards.tsx`)
 - Role-based route access
+
+**Testing:**
+- Vitest + Supertest (backend API)
+- Vitest + React Testing Library (frontend)
+- MongoDB Memory Server for isolated API tests
 
 ### 6.2 Project Structure
 ```
+/server
+  app.js              # Express app factory (used by index.js and tests)
+  index.js            # Server entry + MongoDB connection
+  /controllers        # Route handlers
+  /models             # Mongoose schemas
+  /routes             # API routes
+  /middleware         # auth, errors, asyncHandler
+  /tests              # Vitest API tests (auth, transactions)
+  vitest.config.js
 /src
   /app
-    /components      # Reusable components
-      - Layout.tsx
-      - ConfirmModal.tsx
-      - MemberModal.tsx
-      - BookModal.tsx
-      - ViewMemberModal.tsx
-    /context        # Context providers
-      - AuthContext.tsx
-    /pages          # Page components
-      - Login.tsx
-      - Register.tsx
-      - Dashboard.tsx
-      - Members.tsx
-      - Books.tsx
-      - Borrow.tsx
-      - Return.tsx
-      - BorrowHistory.tsx
-      - Reports.tsx
-      - Profile.tsx
-      - Settings.tsx
-    - App.tsx       # Main app component
-    - routes.ts     # Route configuration
+    guards.tsx        # ProtectedRoute, AdminRoute, LibrarianOrAdminRoute
+    routes.tsx        # Route configuration
+    /api/client.ts    # HTTP client + tests
+    /components       # Reusable UI
+    /context          # AuthContext.tsx
+    /pages            # Page components (+ *.test.tsx)
+  /test/setup.ts      # Vitest DOM setup
   /styles
-    - globals.css   # Global styles
-    - theme.css     # Theme tokens
-    - fonts.css     # Font imports
+.github/workflows/ci.yml  # CI: backend tests, frontend tests, build
 ```
 
 ### 6.3 Component Architecture
@@ -1149,7 +1146,37 @@ interface Transaction {
 
 ## 10. Testing Requirements
 
-### 10.1 Demo Credentials
+### 10.1 Automated Tests (Vitest)
+
+**Backend (`server/tests/`) — 11 tests, in-memory MongoDB:**
+- Health endpoint
+- Login success / invalid password / wrong role
+- Profile requires JWT; returns user when authenticated
+- Register rejects duplicate username
+- Transactions require auth (401)
+- Borrow creates loan and decrements availability
+- Borrow enforces 5-book limit
+- Return calculates overdue fine (R1.00/day)
+
+**Frontend (`src/app/**/*.test.*`) — 11 tests:**
+- API base URL (dev, prod, `VITE_API_URL`)
+- Route guards: unauthenticated → login; member blocked from staff routes; librarian allowed
+- Login page: HTML validation, success navigation, error display
+
+**Run commands (PowerShell):**
+```powershell
+cd server; npm test
+cd ..; npm test
+```
+
+**Run commands (Bash):**
+```bash
+cd server && npm test && cd .. && npm test
+```
+
+CI runs both suites on push/PR to `main`.
+
+### 10.2 Demo Credentials
 **Administrator:**
 - Username: `admin`
 - Password: `password`
@@ -1165,7 +1192,7 @@ interface Transaction {
 - Password: `password`
 - Role: Member
 
-### 10.2 Test Scenarios
+### 10.3 Manual Test Scenarios
 **Authentication:**
 - ✅ Login with valid credentials
 - ✅ Login with invalid credentials
@@ -1213,7 +1240,6 @@ interface Transaction {
 ## 11. Future Enhancements
 
 ### Phase 2 (Potential):
-- 📱 Computer booking system
 - 📧 Email notification integration
 - 📊 Advanced analytics dashboard
 - 🔔 Real-time notifications
@@ -1264,6 +1290,7 @@ interface Transaction {
 - ✅ Proper state management
 - ✅ Error handling implemented
 - ✅ Performance optimized
+- ✅ Automated test suite (22 tests) with CI integration
 
 ---
 
@@ -1290,6 +1317,7 @@ interface Transaction {
 | Version | Date | Author | Changes |
 |---------|------|--------|---------|
 | 1.0.0 | March 2026 | Development Team | Initial release |
+| 1.1.0 | May 2026 | Development Team | Automated tests (Vitest), CI, `server/app.js`, `guards.tsx` |
 
 **Approval:**
 

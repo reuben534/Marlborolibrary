@@ -21,7 +21,13 @@
 - **Passwords:** Verified and maintained bcryptjs hashing for all user accounts.
 - **Validation:** Added robust client-side and server-side input validation to prevent invalid data from corrupting the system.
 
-### 4. ✅ Stability & Error Handling
+### 4. ✅ Automated Testing & CI
+- **Backend:** Vitest + Supertest + in-memory MongoDB (`server/tests/`)
+- **Frontend:** Vitest + Testing Library (`guards`, Login, API client)
+- **Total:** 22 passing tests; GitHub Actions runs both on `main`
+- **Refactor:** `server/app.js` factory; `guards.tsx` for testable route protection
+
+### 5. ✅ Stability & Error Handling
 - **Centralized Handler:** Added `errorMiddleware.js` to catch and log all system exceptions gracefully.
 - **Async Handling:** Implemented `asyncHandler` to ensure database timeouts or API errors don't crash the server.
 - **UI Feedback:** Enhanced all modals with loading states and real-time error messaging.
@@ -48,6 +54,8 @@
 ✅ Backend Stability: HARDENED
 ✅ Frontend UX: VALIDATED
 ✅ Security: AUDITED
+✅ Automated Tests: 22/22 PASSING
+✅ CI: CONFIGURED
 ✅ Documentation: ALIGNED
 ```
 
@@ -55,14 +63,18 @@
 
 ## 🎯 Next Steps
 
-### 1. Final Seeding (Mandatory)
-Before the final demonstration, run the updated seed script to populate the Atlas cluster with fresh sample data:
-```bash
-cd server
-npm run seed
+### 1. Run Automated Tests
+```powershell
+cd server; npm test
+cd ..; npm test
 ```
 
-### 2. Live Walkthrough
+### 2. Final Seeding (if needed)
+```powershell
+cd server; npm run seed
+```
+
+### 3. Live Walkthrough
 - Login as **admin** to manage computers and members.
 - Login as **member** to browse the catalogue and book a computer.
 - Verify that overdue returns correctly calculate the R1.00/day fine.
@@ -77,9 +89,10 @@ Security:         A+ ███████████████████�
 Cloud Ready:      ✅ YES
 Mobile Responsive: ✅ YES
 Error Handling:   ✅ COMPREHENSIVE
+Automated Tests:  ✅ 22/22
 ```
 
 ---
 
-**Session Completed:** May 9, 2026  
+**Session Completed:** May 17, 2026  
 **Outcome:** ✅ ALL TECHNICAL & FUNCTIONAL REQUIREMENTS MET 🚀

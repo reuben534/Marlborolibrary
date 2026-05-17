@@ -7,6 +7,8 @@
     "build": "vite build",
     "dev": "vite",
     "start": "node server/index.js",
+    "test": "vitest run",
+    "test:watch": "vitest",
     "postinstall": "npm install --prefix server --omit=dev"
   },
   "engines": {
@@ -72,9 +74,15 @@
   },
   "devDependencies": {
     "@tailwindcss/vite": "4.1.12",
+    "@testing-library/jest-dom": "^6.9.1",
+    "@testing-library/react": "^16.3.0",
+    "@testing-library/user-event": "^14.6.1",
     "@vitejs/plugin-react": "4.7.0",
+    "@vitest/coverage-v8": "^3.2.4",
+    "jsdom": "^26.1.0",
     "tailwindcss": "4.1.12",
-    "vite": "6.3.5"
+    "vite": "6.3.5",
+    "vitest": "^3.2.4"
   },
   "peerDependencies": {
     "react": "18.3.1",

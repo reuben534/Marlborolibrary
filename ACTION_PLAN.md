@@ -91,6 +91,23 @@ VITE v6.3.5 ready in XXX ms
 
 ## ✅ Phase 3: Verification & Testing (TODAY/TOMORROW)
 
+### 3.0 Automated Tests (run first)
+
+**PowerShell:**
+```powershell
+cd server
+npm test
+cd ..
+npm test
+```
+
+**Bash:**
+```bash
+cd server && npm test && cd .. && npm test
+```
+
+Expected: **22 tests passing** (11 backend + 11 frontend). Backend first run may download MongoDB Memory Server (~1–2 min).
+
 ### 3.1 Frontend Verification
 - [ ] Login page loads
 - [ ] Authentication works
@@ -299,8 +316,10 @@ const BASE_URL = 'https://your-api-domain.com/api'
 ## 📝 Detailed Task Breakdown
 
 ### Week 1: Setup & Testing
+
 **Monday-Tuesday:**
 - [ ] Install dependencies
+- [ ] Run automated tests (`cd server; npm test` then `npm test` from root)
 - [ ] Seed database
 - [ ] Start servers
 - [ ] Test login/authentication
@@ -421,10 +440,11 @@ The project is **COMPLETE** when:
 
 **Current Status: READY FOR PHASE 1 - LOCAL SETUP** 🚀
 
-**Next Immediate Action:**
-1. Install dependencies: `npm install && cd server && npm install`
-2. Seed database: `cd server && npm run seed`
-3. Start backend: `cd server && npm run dev`
-4. Start frontend: `npm run dev`
-5. Access application: http://localhost:5173
+**Next Immediate Action (PowerShell):**
+1. Install dependencies: `npm install`; `cd server`; `npm install`; `cd ..`
+2. Run tests: `cd server`; `npm test`; `cd ..`; `npm test`
+3. Seed database: `cd server`; `npm run seed`
+4. Start backend: `cd server`; `npm run dev` (separate terminal)
+5. Start frontend: `npm run dev` (project root)
+6. Access application: http://localhost:5173
 

@@ -230,7 +230,36 @@ The `dist/` folder contains the production build and can be deployed to:
 
 ---
 
-## 🧪 Testing the Application
+## 🧪 Automated Tests
+
+Run before submitting or deploying. Uses Vitest; backend tests do **not** need MongoDB Atlas.
+
+**PowerShell:**
+```powershell
+cd server
+npm test
+cd ..
+npm test
+```
+
+**Bash:**
+```bash
+cd server && npm test
+cd .. && npm test
+```
+
+| Suite | Location | What it covers |
+|-------|----------|----------------|
+| Backend (11) | `server/tests/` | Login, JWT profile, borrow, 5-book limit, overdue fines |
+| Frontend (11) | `src/app/**/*.test.*` | Route guards, Login page, API base URL |
+
+Optional watch mode: `npm run test:watch`
+
+---
+
+## 🧪 Manual Testing the Application
+
+Use these steps after automated tests pass and both servers are running.
 
 ### 1. Test Login
 ```
@@ -309,9 +338,10 @@ npm run build
 
 ## 📚 Documentation Files
 
-- `README.md` - Quick start guide
+- `README.md` - Quick start, automated tests, troubleshooting
 - `PROJECT_DESCRIPTION.md` - Detailed project overview
-- `FUNCTIONAL_REQUIREMENTS.md` - Complete feature specifications
+- `FUNCTIONAL_REQUIREMENTS.md` - Complete feature specifications (§10 = testing)
+- `STATUS_REPORT.md` - Current project status and test summary
 - `SETUP_AND_RUN.md` - This file
 
 ---
@@ -335,7 +365,8 @@ npm run build
 - [ ] Node.js v18+ installed
 - [ ] MongoDB running or Atlas connected
 - [ ] Frontend dependencies installed (`npm install`)
-- [ ] Backend dependencies installed (`cd server && npm install`)
+- [ ] Backend dependencies installed (`cd server; npm install` in PowerShell)
+- [ ] Automated tests pass (`npm test` in `server/` and project root)
 - [ ] Database seeded (`npm run seed` in server folder)
 - [ ] Backend running on port 5000 (`npm run dev` in server folder)
 - [ ] Frontend running on port 5173 (`npm run dev` in root folder)
@@ -347,6 +378,7 @@ npm run build
 ## 🚢 Deployment Checklist
 
 ### Before Deploying:
+- [ ] Run `npm test` in `server/` and project root
 - [ ] Run `npm run build` in root directory
 - [ ] Verify build output in `dist/` folder
 - [ ] Test with `npm run preview` (if available)

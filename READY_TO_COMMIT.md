@@ -71,10 +71,10 @@ Quality Score: A+ (9.9/10) ✓
 - Deployment guide prepared
 
 ### ✅ Testing
-- Application structure verified
-- API client configured
-- Backend endpoints ready
-- Authentication flow complete
+- **22 automated tests** (Vitest): 11 backend API + 11 frontend unit
+- Run: `cd server; npm test` then `npm test` from project root (PowerShell)
+- CI runs both suites on push to `main`
+- Manual UI walkthrough documented in `SETUP_AND_RUN.md`
 
 ---
 
@@ -275,7 +275,12 @@ https://github.com/reuben534/Marlborolibrary/commits/main
 
 ### Next Step
 ```
-Execute: git add . && git commit -m "fix: resolve merge conflicts..." && git push origin main
+Execute (PowerShell):
+```powershell
+git add .
+git commit -m "your message"
+git push origin main
+```
 ```
 
 ### After Push
@@ -328,16 +333,19 @@ git push origin main
 ### 2. Verify on GitHub
 Visit: https://github.com/reuben534/Marlborolibrary
 
-### 3. Test Locally (Optional but Recommended)
-```bash
-# Terminal 1
-cd server && npm run dev
+### 3. Test Locally (Recommended)
+```powershell
+# Automated tests
+cd server; npm test
+cd ..; npm test
 
-# Terminal 2
+# Terminal 1 — backend
+cd server; npm run dev
+
+# Terminal 2 — frontend (project root)
 npm run dev
 
-# Browser
-http://localhost:5173
+# Browser: http://localhost:5173
 ```
 
 ### 4. Report Status

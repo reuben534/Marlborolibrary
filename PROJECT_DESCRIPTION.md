@@ -131,42 +131,40 @@ The application supports **three distinct user roles** with specific permissions
 - React Hooks (useState, useEffect, useContext)
 - Local state for component data
 
+### **Testing & Quality**
+- **Vitest** — test runner (frontend and backend)
+- **Supertest** — HTTP API integration tests
+- **React Testing Library** — component and guard tests
+- **MongoDB Memory Server** — isolated backend tests (no Atlas required)
+- **GitHub Actions CI** — runs all tests on push to `main`
+
 ---
 
 ## 📁 Project Structure
 
 ```
 marlboro-library/
+├── server/
+│   ├── app.js                   # Express app factory
+│   ├── index.js                 # Entry point + DB connection
+│   ├── controllers/             # API logic
+│   ├── models/                  # Mongoose schemas
+│   ├── routes/                  # API routes
+│   ├── middleware/              # Auth, errors, asyncHandler
+│   ├── tests/                   # Vitest API tests
+│   └── vitest.config.js
 ├── src/
 │   ├── app/
-│   │   ├── components/          # Reusable components
-│   │   │   ├── Layout.tsx       # Main layout with sidebar
-│   │   │   ├── ConfirmModal.tsx # Confirmation dialogs
-│   │   │   ├── MemberModal.tsx  # Add/Edit member modal
-│   │   │   ├── BookModal.tsx    # Add/Edit book modal
-│   │   │   └── ViewMemberModal.tsx # Member details view
-│   │   ├── context/             # Context providers
-│   │   │   └── AuthContext.tsx  # Authentication context
-│   │   ├── pages/               # Page components
-│   │   │   ├── Login.tsx        # Login page
-│   │   │   ├── Register.tsx     # Registration page
-│   │   │   ├── Dashboard.tsx    # Main dashboard
-│   │   │   ├── Members.tsx      # Member management
-│   │   │   ├── Books.tsx        # Book catalogue
-│   │   │   ├── Borrow.tsx       # Borrowing operations
-│   │   │   ├── Return.tsx       # Return operations
-│   │   │   ├── BorrowHistory.tsx # Transaction history
-│   │   │   ├── Reports.tsx      # Reports & analytics
-│   │   │   ├── Profile.tsx      # User profile
-│   │   │   └── Settings.tsx     # System settings
-│   │   ├── App.tsx              # Main app component
-│   │   └── routes.ts            # Route configuration
-│   └── styles/
-│       ├── globals.css          # Global styles
-│       ├── theme.css            # Theme tokens
-│       └── fonts.css            # Font imports
-├── FUNCTIONAL_REQUIREMENTS.md   # Detailed requirements
-├── PROJECT_DESCRIPTION.md       # This file
+│   │   ├── guards.tsx           # Role-based route guards
+│   │   ├── routes.tsx           # Route configuration
+│   │   ├── api/client.ts        # API client
+│   │   ├── components/          # Reusable UI
+│   │   ├── context/AuthContext.tsx
+│   │   └── pages/               # Screens (+ *.test.tsx)
+│   └── test/setup.ts            # Vitest DOM setup
+├── .github/workflows/ci.yml     # CI: test + build
+├── FUNCTIONAL_REQUIREMENTS.md
+├── PROJECT_DESCRIPTION.md
 └── package.json
 ```
 
@@ -583,6 +581,31 @@ Info: #3B82F6
 
 ---
 
+## 🧪 Testing
+
+### Automated (22 tests)
+
+| Suite | Command | Count |
+|-------|---------|-------|
+| Backend API | `npm test` in `server/` | 11 |
+| Frontend unit | `npm test` in project root | 11 |
+
+**PowerShell:**
+```powershell
+cd server; npm test
+cd ..; npm test
+```
+
+**Bash:** `cd server && npm test && cd .. && npm test`
+
+Covers JWT auth, borrow limits, overdue fines, route guards, and Login UI behaviour. See `FUNCTIONAL_REQUIREMENTS.md` §10.1 for the full list.
+
+### Manual
+
+Follow the walkthroughs in this document and `SETUP_AND_RUN.md` for end-to-end UI verification (members, books, borrow/return, computer booking, reports).
+
+---
+
 ## 🚧 Known Limitations
 
 **Current Version (1.0.0):**
@@ -627,8 +650,9 @@ Info: #3B82F6
 **Available Documents:**
 - ✅ `FUNCTIONAL_REQUIREMENTS.md` - Complete functional requirements specification
 - ✅ `PROJECT_DESCRIPTION.md` - This file (overview and user guide)
+- ✅ `SETUP_AND_RUN.md` - Install, run, automated + manual testing
+- ✅ `README.md` - Quick start and test commands
 - 📝 API Documentation (future)
-- 📝 Developer Guide (future)
 - 📝 User Manual (future)
 
 ---
@@ -688,8 +712,8 @@ Built with:
 ---
 
 **Version:** 1.0.0  
-**Last Updated:** March 2026  
-**Status:** ✅ Production Ready
+**Last Updated:** May 2026  
+**Status:** ✅ Production Ready (22 automated tests, CI enabled)
 
 ---
 

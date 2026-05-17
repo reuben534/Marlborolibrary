@@ -18,6 +18,7 @@ The original design is available at [Figma](https://www.figma.com/design/MKr3fUl
 - **Frontend:** React 18, TypeScript, Tailwind CSS v4, Vite, Lucide Icons, Sonner.
 - **Backend:** Node.js, Express.js, Mongoose.
 - **Database:** MongoDB Atlas (Cloud) or Local MongoDB.
+- **Testing:** Vitest, Supertest, Testing Library (22 automated tests).
 
 ## 📋 Prerequisites
 
@@ -105,6 +106,35 @@ The application will be available at `http://localhost:5173`.
 3. **Photo Upload Not Working:**
    - Ensure the root `images/` directory exists and has write permissions.
    - Check if the backend is correctly serving static files from `../images`.
+
+## 🧪 Tests
+
+Automated tests use **Vitest**. Backend tests run against an **in-memory MongoDB** (no Atlas required).
+
+**PowerShell (Windows):**
+```powershell
+cd server
+npm test
+cd ..
+npm test
+```
+
+**Bash / macOS / Linux:**
+```bash
+cd server && npm test
+cd .. && npm test
+```
+
+| Suite | Command | Tests |
+|-------|---------|-------|
+| Backend API | `npm test` in `server/` | 11 (auth, borrow, fines, limits) |
+| Frontend unit | `npm test` in project root | 11 (guards, login, API client) |
+
+Watch mode: `npm run test:watch` in either directory.
+
+CI (`.github/workflows/ci.yml`) runs both suites and the frontend build on every push to `main`.
+
+First backend run may take 1–2 minutes while MongoDB Memory Server downloads its binary.
 
 ## 📄 License
 

@@ -131,7 +131,13 @@ You should see:
 
 ---
 
-## 🧪 Optional: Test Before Committing
+## 🧪 Test Before Committing
+
+### Automated tests (22 total):
+```powershell
+cd server; npm test
+cd ..; npm test
+```
 
 ### See exactly what will be committed:
 ```bash
@@ -307,23 +313,39 @@ git push origin main --force-with-lease
 
 ## ✨ After Successful Push
 
-### Next: Test the Application
+### Next: Run Automated Tests
 
-**Terminal 1 - Start Backend:**
+**PowerShell (recommended on Windows):**
+```powershell
+cd server
+npm test
+cd ..
+npm test
+```
+
+**Bash:**
 ```bash
+cd server && npm test && cd .. && npm test
+```
+
+Expected: **22 tests passing** (11 backend + 11 frontend).
+
+> **Note:** Windows PowerShell 5.1 does not support `&&`. Use `;` between commands or run them on separate lines.
+
+### Then: Run the Application
+
+**Terminal 1 - Backend:**
+```powershell
 cd server
 npm run dev
 ```
 
-**Terminal 2 - Start Frontend:**
-```bash
+**Terminal 2 - Frontend (project root):**
+```powershell
 npm run dev
 ```
 
-**Browser:**
-```
-http://localhost:5173
-```
+**Browser:** http://localhost:5173
 
 ---
 

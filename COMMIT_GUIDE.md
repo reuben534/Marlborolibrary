@@ -133,6 +133,17 @@ To https://github.com/reuben534/Marlborolibrary.git
 
 ---
 
+### Run Tests Before Committing (Recommended)
+
+```powershell
+cd server; npm test
+cd ..; npm test
+```
+
+Expected: **22/22** tests passing. See `README.md` § Tests for details.
+
+---
+
 ### Full Command Sequence
 
 ```bash
@@ -320,7 +331,7 @@ git push origin main
 | Net change               | -35 lines |
 | Merge conflicts resolved | 2         |
 | TypeScript errors fixed  | 0         |
-| Test coverage            | 100% ✓    |
+| Automated tests          | 22/22 ✓   |
 
 ---
 

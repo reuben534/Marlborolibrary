@@ -14,46 +14,12 @@ import { Reports } from './pages/Reports';
 import { Settings } from './pages/Settings';
 import { ComputerBooking } from './pages/ComputerBooking';
 import { AuditTrail } from './pages/AuditTrail';
-import { Layout } from './components/Layout';
 import { useAuth } from './context/AuthContext';
-
-function ProtectedRoute({ children }: { children: React.ReactNode }) {
-  const { user } = useAuth();
-  
-  if (!user) {
-    return <Navigate to="/login" replace />;
-  }
-  
-  return <Layout>{children}</Layout>;
-}
-
-function AdminRoute({ children }: { children: React.ReactNode }) {
-  const { user } = useAuth();
-  
-  if (!user) {
-    return <Navigate to="/login" replace />;
-  }
-  
-  if (user.role !== 'admin') {
-    return <Navigate to="/dashboard" replace />;
-  }
-  
-  return <Layout>{children}</Layout>;
-}
-
-function LibrarianOrAdminRoute({ children }: { children: React.ReactNode }) {
-  const { user } = useAuth();
-  
-  if (!user) {
-    return <Navigate to="/login" replace />;
-  }
-  
-  if (user.role === 'member') {
-    return <Navigate to="/dashboard" replace />;
-  }
-  
-  return <Layout>{children}</Layout>;
-}
+import {
+  ProtectedRoute,
+  AdminRoute,
+  LibrarianOrAdminRoute,
+} from './guards';
 
 function DashboardRouter() {
   const { user } = useAuth();
