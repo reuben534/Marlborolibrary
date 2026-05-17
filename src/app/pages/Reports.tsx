@@ -3,7 +3,7 @@ import { useAuth } from '../context/AuthContext';
 import { FileText, Download, TrendingUp, BookOpen, Users, Clock, Loader2, Activity } from 'lucide-react';
 import { Link } from 'react-router';
 import { toast } from 'sonner';
-import { apiClient } from '../api/client';
+import { apiClient, BASE_URL } from '../api/client';
 
 export function Reports() {
   const { user } = useAuth();
@@ -43,7 +43,7 @@ export function Reports() {
       
       const token = localStorage.getItem('token');
       // Using direct fetch because apiClient is hardcoded to parse JSON
-      const response = await fetch(`http://localhost:5000/api/reports/export/${encodeURIComponent(reportType)}`, {
+      const response = await fetch(`${BASE_URL}/reports/export/${encodeURIComponent(reportType)}`, {
         headers: {
           'Authorization': `Bearer ${token}`
         }

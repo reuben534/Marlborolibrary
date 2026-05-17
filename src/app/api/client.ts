@@ -1,25 +1,30 @@
-const BASE_URL = 'http://localhost:5000/api';
-export const IMAGE_BASE_URL = 'http://localhost:5000';
+/** API host without trailing slash. Empty in production = same origin as the web app. */
+export function getApiBaseUrl(): string {
+  const env = import.meta.env.VITE_API_URL as string | undefined;
+  if (env) return env.replace(/\/$/, '');
+  if (import.meta.env.PROD) return '';
+  return 'http://localhost:5000';
+}
+
+export const BASE_URL = `${getApiBaseUrl()}/api`;
+export const IMAGE_BASE_URL = getApiBaseUrl();
 
 export const apiClient = async (endpoint: string, options: RequestInit = {}) => {
   const token = localStorage.getItem('token');
-  
+
   const headers: Record<string, string> = {
     ...(token ? { Authorization: `Bearer ${token}` } : {}),
   };
 
-  // Add headers from options
   if (options.headers) {
     const optionsHeaders = options.headers as Record<string, string>;
     Object.assign(headers, optionsHeaders);
   }
 
-  // Default Content-Type to application/json if not already set and not FormData
   if (!headers['Content-Type'] && !(options.body instanceof FormData)) {
     headers['Content-Type'] = 'application/json';
   }
 
-  // If Content-Type is explicitly set to empty string, remove it (let fetch handle it for FormData)
   if (headers['Content-Type'] === '') {
     delete headers['Content-Type'];
   }

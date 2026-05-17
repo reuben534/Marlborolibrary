@@ -5,10 +5,6 @@ import cors from 'cors';
 import morgan from 'morgan';
 import path from 'path';
 import { fileURLToPath } from 'url';
-
-const __filename = fileURLToPath(import.meta.url);
-const __dirname = path.dirname(__filename);
-const imagesDir = path.join(__dirname, '../images');
 import authRoutes from './routes/authRoutes.js';
 import memberRoutes from './routes/memberRoutes.js';
 import bookRoutes from './routes/bookRoutes.js';
@@ -20,21 +16,36 @@ import reportRoutes from './routes/reportRoutes.js';
 import auditRoutes from './routes/auditRoutes.js';
 import { notFound, errorHandler } from './middleware/errorMiddleware.js';
 
-// Load environment variables
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
+const imagesDir = path.join(__dirname, '../images');
+const distPath = path.join(__dirname, '../dist');
+
 dotenv.config();
 
 const app = express();
 const PORT = process.env.PORT || 5000;
+const isProduction = process.env.NODE_ENV === 'production';
 
-// Middleware
-app.use(cors());
+const corsOrigins = process.env.FRONTEND_URL
+  ? process.env.FRONTEND_URL.split(',').map((origin) => origin.trim())
+  : true;
+
+app.use(
+  cors({
+    origin: corsOrigins,
+    credentials: true,
+  })
+);
 app.use(express.json());
-app.use(morgan('dev'));
+app.use(morgan(isProduction ? 'combined' : 'dev'));
 
-// Serve static images
 app.use('/images', express.static(imagesDir));
 
-// Routes
+app.get('/api/health', (_req, res) => {
+  res.json({ ok: true, environment: process.env.NODE_ENV || 'development' });
+});
+
 app.use('/api/auth', authRoutes);
 app.use('/api/members', memberRoutes);
 app.use('/api/books', bookRoutes);
@@ -45,22 +56,31 @@ app.use('/api/computers', computerRoutes);
 app.use('/api/reports', reportRoutes);
 app.use('/api/audit', auditRoutes);
 
-// Error Handling Middleware
+if (isProduction) {
+  app.use(express.static(distPath));
+  app.get(/^(?!\/api).*/, (req, res, next) => {
+    if (req.path.startsWith('/images')) {
+      return next();
+    }
+    res.sendFile(path.join(distPath, 'index.html'), (err) => {
+      if (err) next();
+    });
+  });
+} else {
+  app.get('/', (_req, res) => {
+    res.json({ message: 'Marlboro Library API is running' });
+  });
+}
+
 app.use(notFound);
 app.use(errorHandler);
 
-// Basic route
-app.get('/', (req, res) => {
-  res.json({ message: 'Marlboro Library API is running' });
-});
-
-// Database connection
 mongoose
   .connect(process.env.MONGODB_URI)
   .then(() => {
     console.log('Connected to MongoDB Database');
     app.listen(PORT, () => {
-      console.log(`Server is running on port ${PORT}`);
+      console.log(`Server is running on port ${PORT} (${process.env.NODE_ENV || 'development'})`);
     });
   })
   .catch((err) => {

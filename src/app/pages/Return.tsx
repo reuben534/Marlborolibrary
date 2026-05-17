@@ -1,8 +1,11 @@
 import { useState, useEffect } from "react";
-import { Calendar, BookDown, DollarSign, Calculator } from "lucide-react";
+import { Calendar, BookDown, Banknote, Calculator } from "lucide-react";
 import { ConfirmModal } from "../components/ConfirmModal";
 import { toast } from "sonner";
 import { apiClient } from "../api/client";
+
+const formatZAR = (amount: number) =>
+  `R ${amount.toLocaleString("en-ZA", { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`;
 
 export function Return() {
   const [formData, setFormData] = useState({
@@ -53,7 +56,7 @@ export function Return() {
       );
       const fee = daysLate * 1; // R1 per day as per backend
       setLateFee(fee);
-      toast.info(`${daysLate} days overdue. Fine: R${fee.toFixed(2)}`);
+      toast.info(`${daysLate} days overdue. Fine: ${formatZAR(fee)}`);
     } else {
       setLateFee(0);
       toast.success("Returned on time. No fine!");
@@ -221,11 +224,11 @@ export function Return() {
                 Calculate Fine
               </button>
               <div className="flex items-center gap-3 px-6 py-3 bg-gray-50 rounded-lg">
-                <DollarSign className="size-5 text-gray-600" />
+                <Banknote className="size-5 text-gray-600" />
                 <div>
-                  <p className="text-xs text-gray-600">Fine Amount</p>
+                  <p className="text-xs text-gray-600">Fine Amount (ZAR)</p>
                   <p className="text-lg font-bold text-gray-900">
-                    R{lateFee.toFixed(2)}
+                    {formatZAR(lateFee)}
                   </p>
                 </div>
               </div>
@@ -272,7 +275,7 @@ export function Return() {
         title="Confirm Return"
         description={`Are you sure you want to register this return?${
           lateFee > 0
-            ? ` The member will need to pay a fine of R${lateFee.toFixed(2)}.`
+            ? ` The member will need to pay a fine of ${formatZAR(lateFee)}.`
             : ""
         }`}
         confirmText="Yes, Confirm"
